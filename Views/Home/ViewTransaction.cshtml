@@ -1,0 +1,136 @@
+﻿<script src="~/js/azure-storage.blob.js" type="text/javascript"></script>
+@model Mtama.Models.HomeViewModels.PaymentModel
+@{
+    ViewData["Title"] = "View Transaction";
+    var etherscanLink = ConfigurationManager.GetAppSetting("Etherscan");
+}
+
+<div class=" col-lg-12 col-md-12" id="bodyIdViewTransaction" >
+    <div class="col-md-3">
+
+    </div>
+    <div class="col-md-6" >
+        <div id="spinnerViewTransaction"></div>
+        <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" id="frmViewTransaction">
+            <div class="form-group">
+                <label>Sender</label>
+                <input id="txtWalletAddress" asp-for="Sender.FirstName" readonly class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="SenderWallet">Sender Wallet</label>
+                <input id="txtWalletAddress" asp-for="SenderWallet" readonly class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Receiver Name</label>
+                <input id="txtWalletAddress" asp-for="Receiver.FirstName" readonly class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ReceiverWallet">Receiver Wallet</label>
+                <input asp-for="ReceiverWallet" readonly class="form-control" value="0xc6264F854fC0B21cfc6e30E9e6BC8683c7d0ad44" />
+            </div>
+            <div class="form-group">
+                <label asp-for="AmountInFiat">Amount In Kenyan Shilling</label>
+                <input asp-for="AmountInFiat" type="number" readonly placeholder="Amount In Kenyan" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="AmountInEther">Amount In Ether</label>
+                <input id="txtAmountInEther" asp-for="AmountInEther" type="number" readonly placeholder="Amount In Kenyan (1ETH = 15000 KSH)" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="TxNote">Transaction Note</label>
+                <textarea asp-for="TxNote" rows="6" cols="75" readonly placeholder="Description about the transaction" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label asp-for="TxStatus">Transaction Status</label>
+                <input asp-for="TxStatus" rows="6" id="TxStatusId" cols="75" readonly placeholder="Description about the transaction" class="form-control" />
+            </div>
+
+            @{ if (bool.Parse(ViewData["ShowVerify"].ToString()) == true)
+                {
+                    <button type="submit" onclick="verifyPayments()" class="btn btn-link btn-default form-control text-center" style="background-color:darkorange; color:white">Verify Payment</button>
+                }
+            }
+
+            <div class="form-group">
+                <label>Escrow Transaction</label>
+                <a href="@etherscanLink@Model.TxHash" target="_blank">@Model.TxHash</a>
+            </div>
+            <div class="form-group">
+                <label>Final Transaction</label>
+                <a href="@etherscanLink@Model.TxHash2" target="_blank">@Model.TxHash2</a>
+            </div>
+            <div>
+                @Html.HiddenFor(h => h.Id)
+            </div>
+
+            @*<form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="get" id="frmViewTransaction">*@
+            <div style="border-bottom-color:blueviolet">
+                <div class="form-group">
+                    <label asp-for="SenderAttachment"></label>
+                    @if (Model.SenderAttachment != null)
+                    {
+                        <a class="pull-right btn-link glyphicon glyphicon-paperclip" href="@Model.SenderAttachment"></a>
+                    }
+                    <input asp-for="SenderAttachment" id="senderattachment" hidden type="text" class="" /><br />
+                    <input id="senderattachment1" type="file" onchange="ReceiverFileSelected('senderattachment1','senderattachmentbtn')" class="" /><br />
+                </div>
+                <div class="form-group">
+                    <label asp-for="SenderComment"></label>
+                    <textarea asp-for="SenderComment" rows="4" cols="75" id="sendercomment" placeholder="Sender's Comment" class="form-control"></textarea>
+                </div>
+                <button onclick="App.upload('senderattachment1','senderattachment','btnSubmit'); return false;" disabled id="senderattachmentbtn" class="btn btn-link btn-default text-center" style="background-color:darkorange; color:white">Upload File</button>
+            </div>
+            <br />
+            <div>
+                <div class="form-group">
+                    <label asp-for="ReceiverAttachment"></label>
+                    @if (Model.ReceiverAttachment != null)
+                    {
+                        <a class="pull-right btn-link glyphicon glyphicon-paperclip" href="@Model.ReceiverAttachment"></a>
+                    }
+                    <input asp-for="ReceiverAttachment" id="receiverattachment" hidden type="text" class="" /><br />
+                    <input id="receiverattachment1" rows="6" onchange="ReceiverFileSelected('receiverattachment1','receiverattachmentbtn','btnSubmit')" cols="75" type="file" class="" /><br />
+                </div>
+                <div class="form-group">
+                    <label asp-for="ReceiverComment"></label>
+                    <textarea asp-for="ReceiverComment" rows="4" id="receivercomment" cols="75" placeholder="Receiver's Comment" class="form-control"></textarea>
+                </div>
+                <button onclick="App.upload('receiverattachment1','receiverattachment','btnSubmit'); return false;" disabled id="receiverattachmentbtn" class="btn btn-link btn-default text-center" style="background-color:darkorange; color:white">Upload File</button>
+                <br />
+                <br />
+
+                <button type="submit" id="btnSubmit" class="btn btn-link btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+            </div>
+            <div hidden>
+                <input type="text" id="inputReceiver" name="name" value="@ViewData["Receiver"]" />
+                <input type="text" id="inputSender" name="name" value="@ViewData["Sender"]" />
+                <input type="text" id="inputId" name="name" value="@ViewData["Id"]" />
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    function verifyPayments() {
+        
+      //  document.getElementById("IisVerifyClick").value = "true";
+        document.getElementById("TxStatusId").value = "Verified";
+     
+
+    }
+
+    if (document.getElementById("inputReceiver").value  == false) {
+        document.getElementById("receiverattachment1").disabled = true;
+        document.getElementById("receiverattachmentbtn").disabled = true;
+        document.getElementById("receivercomment").disabled = true;
+    }
+    if (document.getElementById("inputSender").value == false) {
+        document.getElementById("senderattachment1").disabled = true;
+        document.getElementById("senderattachmentbtn").disabled = true;
+        document.getElementById("sendercomment").disabled = true;
+    }            
+   
+
+</script>

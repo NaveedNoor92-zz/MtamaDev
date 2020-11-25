@@ -1,0 +1,26 @@
+﻿@using Mtama.Views.Manage
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+
+<ul class="nav nav-pills nav-stacked">
+    @if (ViewBag.AdminEdit != true)
+    {
+        <li class="@ManageNavPages.IndexNavClass(ViewContext)"><a asp-action="Profile">Profile</a></li>
+        <li class="@ManageNavPages.AttachmentsNavClass(ViewContext)"><a asp-action="Attachments">Attachments</a></li>
+        <li class="@ManageNavPages.ChangePasswordNavClass(ViewContext)"><a asp-action="ChangePassword">Password</a></li>
+        @*<li class="@ManageNavPages.ManageUserRolesNavClass(ViewContext)"><a asp-action="ChangePassword">ManageUserRoles</a></li>*@
+        @if (hasExternalLogins)
+        {
+            <li class="@ManageNavPages.ExternalLoginsNavClass(ViewContext)"><a asp-action="ExternalLogins">External logins</a></li>
+        }
+        @*<li class="@ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"><a asp-action="TwoFactorAuthentication">Two-factor authentication</a></li>*@
+    }
+    @*else
+    {
+        <li>Edit User</li>
+    }*@
+
+</ul>
+

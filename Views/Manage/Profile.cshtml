@@ -1,0 +1,511 @@
+﻿@model ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData.AddActivePage(ManageNavPages.Index);
+}
+@inject SignInManager<ApplicationUser> signInManager;
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script src="~/js/google-map.js"></script>
+<script>
+    $(function () {
+        $("#accordion").accordion({
+            collapsible: true
+        });
+    });
+</script>
+<style>
+    #mymaps {
+        width: 100%;
+        height: 300px;
+    }
+
+    hr.rounded {
+        border-top: 8px solid #bbb;
+        border-radius: 5px;
+    }
+</style>
+
+<h4>@ViewData["Title"]</h4>
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+<script>var areaMarkers = @Html.Raw(ViewBag.Markers);</script>
+
+
+@*<h3>    @ViewBag.UserRole1 </h3>*@
+
+
+
+<div class="w3-container">
+    <div class="col-md-6">
+        <form method="post">
+
+            @if (@ViewBag.UserRole1 == "Admin")
+            {
+            <div>
+
+                <div id="accordion">
+                    <h3>Personal Information</h3>
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="WalletAddress"></label>
+                            <input id="txtWalletAddress" asp-for="WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
+                            <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="FirstName"></label>
+                            <input asp-for="FirstName" required placeholder="First Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LastName"></label>
+                            <input asp-for="LastName" placeholder="Last Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email"></label>
+                            <div class="input-group">
+
+                                <input asp-for="Email" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Username"></label>
+                            <input asp-for="Username" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber"></label>
+                            <input asp-for="PhoneNumber" type="text" placeholder="07xx xxx xxx" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Dob"> Date of Birth</label>
+                            <input asp-for="Dob" type="date" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="County"></label>
+                            <input asp-for="County" type="text" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="County" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SubCounty"></label>
+                            <input asp-for="SubCounty" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="Sub County" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Ward"></label>
+                            <input asp-for="Ward" placeholder="Ward" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Mpesa_No"></label>
+                            <input asp-for="Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Whatapp_No"></label>
+                            <input asp-for="Whatapp_No " onkeypress="javascript: return onlyNumber(event, this)" placeholder="Whatsapp Number" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Next_of_Kin"></label>
+                            <input asp-for="Next_of_Kin" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="Next of Kin" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Next_of_Kin_Contact"></label>
+                            <input asp-for="Next_of_Kin_Contact" onkeypress="javascript: return onlyNumber(event, this)" placeholder="Next of Kin Contact Number" class="form-control" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+
+
+            </div>
+            }
+            else if (ViewBag.UserRole1 == "Aggregator")
+            {
+
+            <div>
+
+
+
+                <div id="accordion">
+                    <h3>Personal Information</h3>
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="WalletAddress"></label>
+                            <input id="txtWalletAddress" asp-for="WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
+                            <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="FirstName"></label>
+                            <input asp-for="FirstName" required placeholder="First Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LastName"></label>
+                            <input asp-for="LastName" placeholder="Last Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email"></label>
+                            <div class="input-group">
+
+                                <input asp-for="Email" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Username"></label>
+                            <input asp-for="Username" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber"></label>
+                            <input asp-for="PhoneNumber" placeholder="07xx xxx xxx" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Aggregator_Company"></label>
+                            <input asp-for="Aggregator_Company" placeholder="Aggregator/Company" class="form-control" />
+                            <span asp-validation-for="Aggregator_Company" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label asp-for="Company_Registration_Number"></label>
+                            <input asp-for="Company_Registration_Number" type="text" placeholder="Company Registration Number/National ID" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="KraPin"></label>
+                            <input asp-for="KraPin" placeholder="Kra Pin" class="form-control" />
+                            <span asp-validation-for="KraPin" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Mpesa_No"></label>
+                            <input asp-for="Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Crop"></label>
+                            <input asp-for="Crop" placeholder="Crop" class="form-control" />
+                        </div>
+
+
+                    </div>
+
+                    <h3>Plot data</h3>
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="Acreage"></label>
+                            <input asp-for="Acreage" placeholder="Acreage" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Field_Coords"></label>
+                            <input asp-for="Field_Coords" placeholder="Field Coordinates" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Farm Area Map</label>
+                            <input type="button" id="resetbtn" class="btn btn-primary pull-right" value="Reset" />
+                            <div id="mymaps"></div>
+                        </div>
+                        <input type="hidden" asp-for="mapCoords" id="mapCoord" name="mapCoords" value="" />
+                    </div>
+
+                    <h3>Historical data</h3>
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="Crop"></label>
+                            <input asp-for="Crop" placeholder="Crop" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="InputUsed"></label>
+                            <input asp-for="InputUsed" placeholder="Input Used" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PlantingDate"></label>
+                            <input asp-for="PlantingDate" placeholder="Planting Date" type="date" class="form-control" />
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+
+
+            </div>
+
+            }
+            else if (ViewBag.UserRole1 == "supplier" || ViewBag.UserRole1 == "supplier")
+            {
+
+
+                <div id="accordion">
+                    <h3>Personal Information</h3>
+                    <div>
+
+                        <div class="form-group">
+                            <label asp-for="WalletAddress"></label>
+                            <input id="txtWalletAddress" asp-for="WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
+                            <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email"></label>
+                            <div class="input-group">
+
+                                <input asp-for="Email" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Username"></label>
+                            <input asp-for="Username" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber"></label>
+                            <input asp-for="PhoneNumber" placeholder="07xx xxx xxx" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="supplier_Company"></label>
+                            <input asp-for="supplier_Company" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Company_Registration_Number"></label>
+                            <input asp-for="Company_Registration_Number" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="KraPin"></label>
+                            <input asp-for="KraPin" placeholder="Kra Pin" maxlength="11" class="form-control" />
+                            <span asp-validation-for="KraPin" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Mpesa_No"></label>
+                            <input asp-for="Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input_Service"></label>
+                            <input asp-for="Input_Service" type="text" placeholder="Input/Service" class="form-control" />
+                        </div>
+                    </div>
+
+                    <h3>Plot data</h3>
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="Acreage"></label>
+                            <input asp-for="Acreage" placeholder="Acreage" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Field_Coords"></label>
+                            <input asp-for="Field_Coords" placeholder="Field Coordinates" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Farm Area Map</label>
+                            <input type="button" id="resetbtn" class="btn btn-primary pull-right" value="Reset" />
+                            <div id="mymaps"></div>
+                        </div>
+                        <input type="hidden" asp-for="mapCoords" id="mapCoord" name="mapCoords" value="" />
+                    </div>
+
+                    <h3>Historical data</h3>
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="Crop"></label>
+                            <input asp-for="Crop" placeholder="Crop" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="InputUsed"></label>
+                            <input asp-for="InputUsed" placeholder="Input Used" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PlantingDate"></label>
+                            <input asp-for="PlantingDate" placeholder="Planting Date" type="date" class="form-control" />
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+
+            }
+            else if (ViewBag.UserRole1 == "Farmer")
+            {
+                <div id="accordion">
+                    <h3>Personal Information</h3>
+                    <div>
+
+                        <div class="form-group">
+                            <label asp-for="WalletAddress"></label>
+                            <input id="txtWalletAddress" asp-for="WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
+                            <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="FirstName"></label>
+                            <input asp-for="FirstName" required placeholder="First Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LastName"></label>
+                            <input asp-for="LastName" placeholder="Last Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email"></label>
+                            <div class="input-group">
+
+                                <input asp-for="Email" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Username"></label>
+                            <input asp-for="Username" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber"></label>
+                            <input asp-for="PhoneNumber" placeholder="07xx xxx xxx" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="NationalIDNumber"></label>
+                            <input asp-for="NationalIDNumber" placeholder="National ID" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Farmer_Id_Form_No"></label>
+                            <input asp-for="Farmer_Id_Form_No" placeholder="Farmer serial form number" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="KraPin"></label>
+                            <input asp-for="KraPin" placeholder="Kra Pin" maxlength="11" class="form-control" />
+                            <span asp-validation-for="KraPin" class="text-danger"></span>
+                        </div>
+                        @*//Gender Remaining*@
+
+                        <div class="form-group">
+                            <label asp-for="Disability_Type"> Disability Type</label>
+                            <input asp-for="Disability_Type" placeholder="Disability Type" type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Dob"> Date of Birth</label>
+                            <input asp-for="Dob" type="date" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="County"></label>
+                            <input asp-for="County" type="text" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="County" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SubCounty"></label>
+                            <input asp-for="SubCounty" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="Sub County" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Ward"></label>
+                            <input asp-for="Ward" placeholder="Ward" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Mpesa_No"></label>
+                            <input asp-for="Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Whatapp_No"></label>
+                            <input asp-for="Whatapp_No " onkeypress="javascript: return onlyNumber(event, this)" placeholder="Whatsapp Number" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Next_of_Kin"></label>
+                            <input asp-for="Next_of_Kin" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="Next of Kin" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Next_of_Kin_Contact"></label>
+                            <input asp-for="Next_of_Kin_Contact" onkeypress="javascript: return onlyNumber(event, this)" placeholder="Next of Kin Contact Number" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Household_Size"></label>
+                            <input asp-for="Household_Size" placeholder="Household Size" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Economic_Activity"></label>
+                            <input asp-for="Economic_Activity" placeholder="Economic Activity" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Field_pin"></label>
+                            <input asp-for="Field_pin" placeholder="Field_pin" class="form-control" />
+                        </div>
+
+
+                    </div>
+
+                    <h3>Plot data</h3>
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="Acreage"></label>
+                            <input asp-for="Acreage" placeholder="Acreage" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Field_Coords"></label>
+                            <input asp-for="Field_Coords" placeholder="Field Coordinates" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Farm Area Map</label>
+                            <input type="button" id="resetbtn" class="btn btn-primary pull-right" value="Reset" />
+                            <div id="mymaps"></div>
+                        </div>
+                        <input type="hidden" asp-for="mapCoords" id="mapCoord" name="mapCoords" value="" />
+                    </div>
+
+                    <h3>Historical data</h3>
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="Crop"></label>
+                            <input asp-for="Crop" placeholder="Crop" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="InputUsed"></label>
+                            <input asp-for="InputUsed" placeholder="Input Used" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PlantingDate"></label>
+                            <input asp-for="PlantingDate" placeholder="Planting Date" type="date" class="form-control" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+
+            }
+            else
+            {
+                <h3>Nothing to display </h3>
+            }
+
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+@*onkeypress="javascript:return onlyAlphabets(event,this)"*@

@@ -1,0 +1,409 @@
+﻿@model Mtama.Models.AccountViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "RegisterUser";
+}
+
+
+<h2>Register @ViewBag.CreateUser</h2>
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong> Error! </strong>@ViewData["Error"]
+    </div>
+}
+@*<hr />*@
+    <div class="row">
+
+        <div class="col-md-4">
+        </div>
+
+        @if (ViewBag.CreateUser == "Admin")
+        {
+            <div class="col-md-4  thumbnail" style="background-color:#f3f9ff">
+                <h4 class="text-center"> User Registration</h4>
+                <h6 class="text-center">Please fill in the fields below.</h6>
+                <hr />
+
+                <form asp-action="RegisterUser">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <input asp-for="Role" type="hidden" value="@ViewBag.CreateUser" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="control-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName" class="control-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MobileNumber" class="control-label"></label>
+                        <input asp-for="MobileNumber" class="form-control" />
+                        <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword" class="control-label"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create Admin" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+
+
+        }
+        else if (ViewBag.CreateUser == "Aggregator")
+        {
+            <div class="col-md-4  thumbnail" style="background-color:#f3f9ff">
+                <h4 class="text-center"> User Registration</h4>
+                <h6 class="text-center">Please fill in the fields below.</h6>
+                <hr />
+
+                <form asp-action="RegisterUser">
+                    <input type="hidden" name="AddedByAgg" value="@ViewBag.AddedByAgg" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <input asp-for="Role" type="hidden" value="@ViewBag.CreateUser" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="control-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName" class="control-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MobileNumber" class="control-label"></label>
+                        <input asp-for="MobileNumber" class="form-control" />
+                        <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Aggregator_Company" class="control-label"></label>
+                        <input asp-for="Aggregator_Company" class="form-control" />
+                        <span asp-validation-for="Aggregator_Company" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CompanyRegistrationNumber" class="control-label"></label>
+                        <input asp-for="CompanyRegistrationNumber" class="form-control" />
+                        <span asp-validation-for="CompanyRegistrationNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AggregatorRepresentativePhoneNumber" class="control-label"></label>
+                        <input asp-for="AggregatorRepresentativePhoneNumber" class="form-control" />
+                        <span asp-validation-for="AggregatorRepresentativePhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword" class="control-label"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+        }
+        else if (ViewBag.CreateUser == "supplier")
+        {
+
+            <div class="col-md-4  thumbnail" style="background-color:#f3f9ff">
+                <h4 class="text-center"> User Registration</h4>
+                <h6 class="text-center">Please fill in the fields below.</h6>
+                <hr />
+
+                <form asp-action="RegisterUser">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <input asp-for="Role" type="hidden" value="@ViewBag.CreateUser" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MobileNumber" class="control-label"></label>
+                        <input asp-for="MobileNumber" class="form-control" />
+                        <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="supplier_Company" class="control-label"></label>
+                        <input asp-for="supplier_Company" class="form-control" />
+                        <span asp-validation-for="supplier_Company" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CompanyRegistrationNumber" class="control-label"></label>
+                        <input asp-for="CompanyRegistrationNumber" class="form-control" />
+                        <span asp-validation-for="CompanyRegistrationNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="supplierRepresentativePhoneNumber" class="control-label"></label>
+                        <input asp-for="supplierRepresentativePhoneNumber" class="form-control" />
+                        <span asp-validation-for="supplierRepresentativePhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword" class="control-label"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+
+
+        }
+        else if (ViewBag.CreateUser == "Farmer")
+        {
+            <div class="col-md-4  thumbnail" style="background-color:#f3f9ff">
+                <h4 class="text-center"> User Registration</h4>
+                <h6 class="text-center">Please fill in the fields below.</h6>
+                <hr />
+
+                <form asp-action="RegisterUser">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <input asp-for="Role" type="hidden"s value="@ViewBag.CreateUser" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="control-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName" class="control-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MobileNumber" class="control-label"></label>
+                        <input asp-for="MobileNumber" required type="number" class="form-control" />
+                        <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="NationalId" class="control-label"></label>
+                        <input asp-for="NationalId" class="form-control" />
+                        <span asp-validation-for="NationalId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Farmer_Id_Form_No" class="control-label">Farmer serial form number</label>
+                        <input asp-for="Farmer_Id_Form_No" class="form-control" />
+                        <span asp-validation-for="Farmer_Id_Form_No" class="text-danger"></span>
+                    </div>
+
+                    @*<div class="form-group">
+                        <label asp-for="Gender" class="control-label"></label>
+                        <input asp-for="Gender" class="form-control" />
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>*@
+                    <div class="form-group">
+                        @{
+                            List<string> Genderlist = new List<string>();
+                            Genderlist.Add("--Select Gender--");
+                            Genderlist.Add("Male");
+                            Genderlist.Add("Female");
+                            Genderlist.Add("Other");
+
+                            List<SelectListItem> genderlist = new List<SelectListItem>();
+                            foreach (var v in Genderlist)
+                            {
+                                SelectListItem selectListItem = new SelectListItem();
+                                selectListItem.Text = v;
+                                if (Model != null)
+                                {
+                                    if (v == Model.Gender)
+                                    {
+                                        selectListItem.Selected = true;
+                                    }
+                                }
+                                genderlist.Add(selectListItem);
+                            }
+                        }
+
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label asp-for="DisabilityType" class="control-label"></label>
+                        <input asp-for="DisabilityType" class="form-control" />
+                        <span asp-validation-for="DisabilityType" class="text-danger"></span>
+                    </div>
+
+
+             
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword" class="control-label"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+        }
+        else
+        {
+            <h3>Nothing to display</h3>
+        }
+
+        @*<div class="col-md-4">
+            <form asp-action="RegisterUser">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input asp-for="Role" type="text" value="@ViewBag.CreateUser" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName" class="control-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NationalId" class="control-label"></label>
+                    <input asp-for="NationalId" class="form-control" />
+                    <span asp-validation-for="NationalId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Gender" class="control-label"></label>
+                    <input asp-for="Gender" class="form-control" />
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MobileNumber" class="control-label"></label>
+                    <input asp-for="MobileNumber" class="form-control" />
+                    <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Farmer_Id_Form_No" class="control-label"></label>
+                    <input asp-for="Farmer_Id_Form_No" class="form-control" />
+                    <span asp-validation-for="Farmer_Id_Form_No" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DisabilityType" class="control-label"></label>
+                    <input asp-for="DisabilityType" class="form-control" />
+                    <span asp-validation-for="DisabilityType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="supplier_Company" class="control-label"></label>
+                    <input asp-for="supplier_Company" class="form-control" />
+                    <span asp-validation-for="supplier_Company" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Aggregator_Company" class="control-label"></label>
+                    <input asp-for="Aggregator_Company" class="form-control" />
+                    <span asp-validation-for="Aggregator_Company" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AggregatorID" class="control-label"></label>
+                    <input asp-for="AggregatorID" class="form-control" />
+                    <span asp-validation-for="AggregatorID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CompanyRegistrationNumber" class="control-label"></label>
+                    <input asp-for="CompanyRegistrationNumber" class="form-control" />
+                    <span asp-validation-for="CompanyRegistrationNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AggregatorRepresentativePhoneNumber" class="control-label"></label>
+                    <input asp-for="AggregatorRepresentativePhoneNumber" class="form-control" />
+                    <span asp-validation-for="AggregatorRepresentativePhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="supplierRepresentativePhoneNumber" class="control-label"></label>
+                    <input asp-for="supplierRepresentativePhoneNumber" class="form-control" />
+                    <span asp-validation-for="supplierRepresentativePhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="control-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </form>
+        </div>*@
+
+
+
+
+
+
+
+    </div>
+
+<div>
+    <a asp-controller="User" asp-action="ViewUsers" class="btn btn-primary">Back to List</a>
+
+</div>
+
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+

@@ -1,0 +1,112 @@
+﻿@model RegisterFarmerViewModel
+@inject SignInManager<ApplicationUser> signInManager;
+@{
+    ViewData["Title"] = "Register";
+}
+
+@*<h2>@ViewData["Title"]</h2>*@
+
+<style>
+    body {
+        background-image: url(/images/colors.jpg);
+        background-repeat: no-repeat;
+        height: 100%;
+        width: 100%;
+        background-size: cover;
+    }
+</style>
+<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<div class="w3-container ">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4 container" style="background-color:white; margin-top:5%">
+
+        <h2 class="text-center" style="margin-top:-13%; color:white">Mtama</h2>
+        <br />
+        @if (ViewData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong> Error! </strong>@ViewData["Error"]
+            </div>
+        }
+        <h4 class="text-center"> Farmer Registration</h4>
+        <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+            <h6 class="text-center">Please fill in the fields below.</h6>
+            <hr />
+            <div class="w3-container">
+                
+                    <div class="form-group " style="background-color:lightgray">
+                        <input asp-for="FirstName" placeholder="First Name" class="form-control" />
+                        <span asp-validation-for="FirstName" onkeypress="javascript:return onlyAlphabets(event,this)" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="LastName" placeholder="Last Name" class="form-control" />
+                        <span asp-validation-for="LastName" onkeypress="javascript:return onlyAlphabets(event,this)" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="NationalId" onkeypress="javascript: return onlyNumber(event, this)" placeholder="National Id" class="form-control" />
+                        <span asp-validation-for="NationalId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        @{
+                            List<string> Genderlist = new List<string>();
+                            Genderlist.Add("--Select Gender--");
+                            Genderlist.Add("Male");
+                            Genderlist.Add("Female");
+                            Genderlist.Add("Other");
+
+                            List<SelectListItem> genderlist = new List<SelectListItem>();
+                            foreach (var v in Genderlist)
+                            {
+                                SelectListItem selectListItem = new SelectListItem();
+                                selectListItem.Text = v;
+                                if (Model != null)
+                                {
+                                    if (v == Model.Gender)
+                                    {
+                                        selectListItem.Selected = true;
+                                    }
+                                }
+                                genderlist.Add(selectListItem);
+                            }
+                         }
+                        @Html.DropDownList("Gender", genderlist, new { @class = "form-control", id = "genderId" })
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="MobileNumber" onkeypress="javascript: return onlyNumber(event, this)" placeholder="07xx xxx xxx " maxlength="10" class="form-control" />
+                        <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="Email" placeholder="Email Address (Optional)" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="Password" placeholder="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="ConfirmPassword" placeholder="Confirm Password" type="password" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+            <button type="submit" class="btn btn-link btn-default form-control text-center" style="background-color:darkorange; color:white">Register</button>
+            <br />
+            <br />
+            <br />
+
+            <div class="form-group">
+                <p>
+                    Already have an Account?
+                    <a asp-action="Login" class="btn-link" asp-route-returnurl="@ViewData["ReturnUrl"]"> Login</a>
+                </p>
+            </div>
+            <br />
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
