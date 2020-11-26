@@ -345,7 +345,7 @@ namespace Mtama.Controllers
         public IActionResult InitatePayment(string UserId)
         {
             ViewBag.UserId = UserId;
-            ViewBag.sasToken = ConfigurationManager.GetAppSetting("SAS");
+            ViewBag.sasToken = ConfigurationManager.GetAppSetting("SAS");   
             return View();
         }
 
@@ -362,10 +362,10 @@ namespace Mtama.Controllers
                 var pm = new PaymentModel();
 
 
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var SenderId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var guid = Guid.NewGuid().ToString();
 
-                pm.SenderIdNew = UserId;
+                pm.SenderIdNew = SenderId;
                 pm.TxGuid = guid;
                 pm.ReceiverId = user.Id;
                 pm.ReceiverName = user.FirstName +" "+ user.LastName;

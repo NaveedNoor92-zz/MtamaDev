@@ -6,7 +6,7 @@
 
 
 <script src="~/js/azure-storage.blob.js" type="text/javascript"></script>
-<script src="~/js/app.js"></script>
+@*<script src="~/js/app.js"></script>*@
 <script src="~/js/site.js"></script>
 <script src="~/js/Spin.js"></script>
 
@@ -19,7 +19,7 @@
             <div id="spinnerattachment">
             </div>
             <input type="hidden" name="UserId" id="UserId" value="@ViewBag.UserId" />
-            <input type="" name="FileName" id="FileName"  />
+            <input type="hidden" name="FileName" id="FileName"  />
 
             <input type="hidden" id="sasToken" value="@ViewBag.sasToken" name="sasToken" />
 
@@ -62,7 +62,8 @@
         //document.getElementById(attachment1).disabled = true;
 
         var blobUri = "https://mtamadev.blob.core.windows.net/";
-        var sas = document.getElementById("sasToken").value;
+//        var sas = document.getElementById("sasToken").value;
+        var sas = "?sv=2018-03-28&ss=bfqt&srt=sco&sp=rwdlacup&se=2020-03-30T22:18:51Z&st=2019-03-08T14:18:51Z&spr=https&sig=g9cie5XR5b4Z66jkpnRDyJlNvnCWoWDsLAa8t7chgnM%3D";
         var container = "payments";
 
         var file = document.getElementById(File1).files[0];
@@ -89,6 +90,7 @@
             if (error) {
                 // Upload blob failed
                 alert("Upload Failed. Please reload the page. ");
+                $('#spinnerattachment').hide();
                 // alert(error);
 
             } else {

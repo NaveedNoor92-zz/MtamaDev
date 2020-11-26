@@ -200,6 +200,7 @@ App = {
             if (error) {
                 // Upload blob failed
                 alert("Upload Failed. Please reload the page. ");
+                $('#spinnerattachment').hide();
                 // alert(error);
 
             } else {

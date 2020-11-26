@@ -18,7 +18,7 @@ namespace Mtama.Models.ManageViewModels
         public string LastName { get; set; }
 
         [StringLength(50)]
-        [Display(Name = "Farmer Form Id Number")]
+        [Display(Name = "Serial Form Number ")]
         public string Farmer_Id_Form_No { get; set; }
 
         [StringLength(11)]
