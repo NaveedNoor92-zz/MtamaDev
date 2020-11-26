@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Mtama.Data;
 using System;
 using System.Web;
-using Mtama.Models.HomeViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Mtama.Services;
@@ -17,7 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using X.PagedList;
 using Microsoft.AspNetCore.Http;
-using RexMercury.Models;
+using Mtama.Managers;
 
 namespace Mtama.Controllers
 {
@@ -66,8 +65,9 @@ namespace Mtama.Controllers
         public IActionResult MakePayments(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            var pm = new PaymentModel();
-            pm.TxGuid = Guid.NewGuid().ToString();
+
+            var pm = PaymentManager.MakePayments();
+
             return View(pm);
         }
 
@@ -79,22 +79,11 @@ namespace Mtama.Controllers
             try
             {
                 ViewData["ReturnUrl"] = returnUrl;
-
-                var receiver = _context.Users.Where(u => u.WalletAddress == model.ReceiverWallet).SingleOrDefault();
-
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                model.ReceiverId = receiver.Id;
-                model.SenderIdNew = userId;
-                model.TimeStamp = DateTime.UtcNow;
-                model.TxStatus = Common.TxStatusPending;
-
-                _context.Payments.Add(model);
-                _context.SaveChanges();
-
-                model = _context.Payments.Where(p => p.TxGuid == model.TxGuid).FirstOrDefault();
+                model = PaymentManager.MakePayments(_context, model, userId);
+                
                 ViewData["ShowVerify"] = true;
-                return RedirectToAction("ViewTransaction", new { id = model.Id });
-                //return View();
+                return RedirectToAction("ViewTransaction", new { id = model.Id });                
             }
             catch (Exception ex)
             {

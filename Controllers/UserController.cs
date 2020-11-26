@@ -15,12 +15,7 @@ using Microsoft.Extensions.Options;
 using Mtama.Controllers;
 using Mtama.Data;
 using Mtama.Models;
-using Mtama.Models.AccountViewModels;
-using Mtama.Models.HomeViewModels;
-using Mtama.Models.ManageViewModels;
 using Mtama.Services;
-using RexMercury.Models.ManageViewModels;
-
 
 namespace Mtama.Controllers
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RexMercury.Models.ManageViewModels
+namespace Mtama.Models
 {
     public class UserRoleViewModel
     {

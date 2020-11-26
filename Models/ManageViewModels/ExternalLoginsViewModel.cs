@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
-namespace Mtama.Models.ManageViewModels
+namespace Mtama.Models
 {
     public class ExternalLoginsViewModel
     {
