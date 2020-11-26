@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Mtama.Models;
-using Mtama.Models.HomeViewModels;
-using Mtama.Models.AccountViewModels;
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Mtama.Data
@@ -29,9 +28,9 @@ namespace Mtama.Data
             // Add your customizations after calling base.OnModelCreating(builder);
         }
     
-        public DbSet<Mtama.Models.HomeViewModels.PaymentModel> Payments { get; set; }
-        public DbSet<Mtama.Models.HomeViewModels.MarkerModel> Markers { get; set; }
-        public DbSet<Mtama.Models.AccountViewModels.RegisterViewModel> RegisterViewModel { get; set; }
-        public DbSet<Mtama.Models.HomeViewModels.AggregatorAssociationModel> AggregatorAssociations { get; set; }
+        public DbSet<Mtama.Models.PaymentModel> Payments { get; set; }
+        public DbSet<Mtama.Models.MarkerModel> Markers { get; set; }
+        public DbSet<Mtama.Models.RegisterViewModel> RegisterViewModel { get; set; }
+        public DbSet<Mtama.Models.AggregatorAssociationModel> AggregatorAssociations { get; set; }
     }
 }

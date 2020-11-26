@@ -11,9 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Mtama.Models;
-using Mtama.Models.AccountViewModels;
 using Mtama.Services;
-using Mtama.Models.HomeViewModels;
 using Microsoft.AspNetCore.Http;
 using Mtama.Data;
 

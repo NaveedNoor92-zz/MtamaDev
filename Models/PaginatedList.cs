@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mtama.Models.HomeViewModels.Paging
+namespace Mtama.Models
 {
     public class PaginatedList<T> : List<T>
     {

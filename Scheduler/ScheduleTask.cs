@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Mtama.Data;
-using Mtama.Models.HomeViewModels;
+using Mtama.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,18 +34,18 @@ namespace Mtama.Scheduler
                 
         private async void MakeTransfers()
         {
-            Log("START: Executing RexMercury Background Service");
+            Log("START: Executing Mtama Background Service");
             using (var scope = _scopeFactory.CreateScope())
             {
                 _es = new EthService();
                 try
                 {
                     _es.Init();
-                    Log("RexMercury Contract Initialized");
+                    Log("Mtama Contract Initialized");
                 }
                 catch (Exception ex)
                 {
-                    Log("Error contacting RexMercury contract", true);
+                    Log("Error contacting Mtama contract", true);
                     Log(ex.Message + " - " + ex.StackTrace, true);                    
                 }
 

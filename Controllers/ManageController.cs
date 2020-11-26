@@ -14,8 +14,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Mtama.Data;
 using Mtama.Models;
-using Mtama.Models.HomeViewModels;
-using Mtama.Models.ManageViewModels;
 using Mtama.Services;
 
 namespace Mtama.Controllers
