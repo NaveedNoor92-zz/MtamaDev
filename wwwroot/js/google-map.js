@@ -117,7 +117,7 @@ function toCoordString(markersArray) {
     }
     coordString += "]";
 
-    document.getElementById("mapCoord").value = coordString;
+    document.getElementById("profileViewModel_mapCoords").value = coordString;
     console.log("This ran");
     coordString = "";
 }

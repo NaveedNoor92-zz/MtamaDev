@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Mtama.Models.ApplicationUser>
 @inject SignInManager<ApplicationUser> signInManager;
 @{
-    ViewData["Title"] = "ViewUsers";
+    ViewData["Title"] = "View Users";
     //Layout = null;
     Html.ActionLink("linkText", "Profile", "Manage");
 
@@ -103,13 +103,16 @@
     <thead>
         <tr>
             <th>
-                Index
+                #
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FirstName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                Company
             </th>
             @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
             {
@@ -121,67 +124,48 @@
     </thead>
     <tbody>
 
-        @if (signInManager.IsSignedIn(User) && User.IsInRole("Aggregator"))
+        @foreach (var item in Model)
         {
-            @foreach (var item in Model)
-            {
-                if (item.AggregatorID != null)
-                {
-                    <tr>
-                        <td>
-                            @index
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FirstName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.LastName)
-                        </td>
-                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
-                        {
-                            <td>
-                                <a asp-controller="Manage" asp-action="Profile" asp-route-id="@item.Id">Edit Profile</a>
-                                @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
-                                {
-                                    <a>|</a>
-                                    <a asp-action="ManageUserRoles" asp-route-id="@item.Id">Manage Role</a>
-                                }
-                            </td>
-                        }
-                        @{ index++;}
-                    </tr>
-                }
-            }
-        }
-        else
-        {
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @index
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
-                    </td>
-                    @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
+            <tr>
+                <td>
+                    @index
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @if (item.Aggregator_Company != null)
                     {
-                        <td>
-                            <a asp-controller="Manage" asp-action="Profile" asp-route-id="@item.Id">Edit Profile</a>
-                            @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
-                            {
-                                <a>|</a>
-                                <a asp-action="ManageUserRoles" asp-route-id="@item.Id">Manage Role</a>
-                            }
-                        </td>
+                        @Html.DisplayFor(modelItem => item.Aggregator_Company)
                     }
-                    @{ index++;}
-                </tr>
-            }
+                    else if (item.supplier_Company != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.supplier_Company)
+                    }
+                    else
+                    {
+                        @*<p>Company Name not available</p>*@
+                    }
+                </td>
+
+                @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
+                {
+                    <td>
+                        <a asp-controller="Manage" asp-action="Profile" asp-route-id="@item.Id">Edit Profile</a>
+                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
+                        {
+                            <a>|</a>
+                            <a asp-action="ManageUserRoles" asp-route-id="@item.Id">Manage Role</a>
+                        }
+                    </td>
+                }
+                @{ index++;}
+            </tr>
         }
+        
     </tbody>
 </table>
 

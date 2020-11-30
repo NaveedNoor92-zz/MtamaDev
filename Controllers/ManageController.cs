@@ -13,8 +13,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Mtama.Data;
+using Mtama.Managers;
 using Mtama.Models;
 using Mtama.Services;
+using Mtama.VM;
 
 namespace Mtama.Controllers
 {
@@ -55,92 +57,56 @@ namespace Mtama.Controllers
         [Authorize(Roles = "Super Admin,Admin,Aggregator,Farmer,supplier")]
         public async Task<IActionResult> Profile(string id)
         {
-            ApplicationUser  user = null;
-            if (id != null)
+            ProfileViewModelVM model = new ProfileViewModelVM();
+            ApplicationUser1ModelVM user = new ApplicationUser1ModelVM();
+
+            try
             {
-                user = _context.Users.Where(u => u.Id == id).SingleOrDefault();
-                var roles = await _userManager.GetRolesAsync(user);
-                ViewBag.UserRole1 = roles[0];
-                ViewBag.AdminEdit = true;
-            }
-            else 
-            {
-                user = await _userManager.GetUserAsync(User);
-                var roles = await _userManager.GetRolesAsync(user);
-                ViewBag.UserRole1 = roles[0];
+                if (id != null)
+                {
+                    user.applicationUser = _context.Users.Where(u => u.Id == id).SingleOrDefault();
+                    ViewBag.AdminEdit = true;
+                }
+                else
+                {
+                    user.applicationUser = await _userManager.GetUserAsync(User);
+                    
+                }
+                if (user.applicationUser == null)
+                {
+                    throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                }
+
+
+                else
+                {
+                    model = ProfileManager.Profile(_context, user, StatusMessage);
+                    var roles = await _userManager.GetRolesAsync(user.applicationUser);
+                    model.UserRole = roles[0];
+
+                    return View(model);
+                }
+
 
             }
-
-            var mapCoord = "";
-            var markers = _context.Markers.Where(u => u.UserId == user.Id).SingleOrDefault();
-            if (markers != null)
+            catch (Exception ex)
             {
-
-                ViewBag.Markers = markers.LatLng;
-                mapCoord = markers.LatLng;
+                // Do something here
+                return View(model);
             }
-            else
-            {
-                ViewBag.Markers = "Empty";
-            }
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+        
 
-            var model = new ProfileViewModel
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                // Farmer_Id_Form_No = user.Farmer_Id_Form_No,
-                Dob = user.Dob,
-                Username = user.UserName,
-                County = user.County,
-                SubCounty = user.SubCounty,
-                Ward = user.Ward,
-                PhoneNumber = user.PhoneNumber,
-                Mpesa_No = user.Mpesa_No,
-                //  Gender = user.Gender,
-                KraPin = user.KraPin,
-                Whatapp_No = user.Whatapp_No,
-                Bank_Info = user.Bank_Info,
-                Next_of_Kin = user.Next_of_Kin,
-                Next_of_Kin_Contact = user.Next_of_Kin_Contact,
-                Acreage = user.Acreage,
-                Field_Coords = mapCoord,
-                Crop = user.Crop,
-                Email = user.Email,
-                IsEmailConfirmed = user.EmailConfirmed,
-                WalletAddress = user.WalletAddress,
-                StatusMessage = StatusMessage,
-                NationalIDNumber = user.NationalIDNumber,
-                SerialFormNumber = user.SerialFormNumber,
-                InputUsed = user.InputUsed,
-                PlantingDate = user.PlantingDate,
-                Aggregator_Company = user.Aggregator_Company,
-                Company_Registration_Number = user.CompanyRegistrationNumber,
-                Field_pin = user.Field_Pin,
-                Economic_Activity = user.Economic_Activity,
-                Household_Size = user.Household_Size,
-                Disability_Type = user.DisabilityType,
-                Farmer_Id_Form_No = user.Farmer_Id_Form_No,
-                Input_Service = user.InputService,
-                supplier_Company = user.supplier_Company
-
-            };
-
-            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Super Admin,Admin,Aggregator,Farmer,supplier")]
-        public async Task<IActionResult> Profile(ProfileViewModel model , string id)
+        public async Task<IActionResult> Profile(ProfileViewModelVM model , string id)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(model);
+            //}
 
             ApplicationUser user = null;
             if (id != null)
@@ -158,9 +124,9 @@ namespace Mtama.Controllers
             }
 
             //Only allow unique wallet addresses
-            if (model.WalletAddress != null)
+            if (model.profileViewModel.WalletAddress != null)
             {
-                var existingWallets = _context.Users.Where(p => p.WalletAddress == model.WalletAddress).ToList();
+                var existingWallets = _context.Users.Where(p => p.WalletAddress == model.profileViewModel.WalletAddress).ToList();
                 if (existingWallets.Count != 0)
                 {
                     if (existingWallets.Count > 1)
@@ -171,6 +137,30 @@ namespace Mtama.Controllers
                     }
                 }
             }
+
+            if (model.profileViewModel.Email != user.Email)
+            {
+                var setEmailResult = await _userManager.SetEmailAsync(user, model.profileViewModel.Email);
+                if (!setEmailResult.Succeeded)
+                {
+                    StatusMessage = "Error: This Email address is already in use.Please use a different Email Address";
+                    return RedirectToAction(nameof(Profile));
+                }
+            }
+
+
+            if (model.profileViewModel.Username != user.UserName)
+            {                                            //GetUserNameAsync
+                var setUsernameResult = await _userManager.SetUserNameAsync(user, model.profileViewModel.Username);
+                if (!setUsernameResult.Succeeded)
+                {
+                    StatusMessage = "Error: This UserName is already in use.Please use a different UserName";
+                    return RedirectToAction(nameof(Profile));
+                }
+            }
+         
+
+
             //if (model.PhoneNumber != null)
             //{
             //    var existingphonenumber = _context.Users.Where(p => p.PhoneNumber == model.PhoneNumber).ToList();
@@ -198,177 +188,172 @@ namespace Mtama.Controllers
             #region DataAssignment
 
 
-            if (model.FirstName != user.FirstName && model.FirstName != null) 
+            if (model.profileViewModel.FirstName != user.FirstName && model.profileViewModel.FirstName != null) 
             {
-                user.FirstName = model.FirstName;
+                user.FirstName = model.profileViewModel.FirstName;
             }
 
-            if (model.LastName != user.LastName && model.LastName != null)
+            if (model.profileViewModel.LastName != user.LastName && model.profileViewModel.LastName != null)
             {
-                user.LastName = model.LastName;
+                user.LastName = model.profileViewModel.LastName;
             }
 
-            var email = user.Email;
-            if (model.Email != email)
+            if (model.profileViewModel.Email != user.Email)
             {
-                var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
-                if (!setEmailResult.Succeeded)
-                {
-                    StatusMessage = "Error: This Email address is already in use.Please use a different Email Address";
-                    return RedirectToAction(nameof(Profile));
-                }
+                user.Email = model.profileViewModel.Email;
             }
 
-            if (model.Username != user.UserName)
+            if (model.profileViewModel.Username != user.UserName)
             {
-                user.UserName = model.Username;
+                user.UserName = model.profileViewModel.Username;
             }
 
-            if (model.PhoneNumber != user.PhoneNumber)
+
+            if (model.profileViewModel.PhoneNumber != user.PhoneNumber)
             {
-                user.PhoneNumber = model.PhoneNumber;
+                user.PhoneNumber = model.profileViewModel.PhoneNumber;
             } 
 
-            if (model.Farmer_Id_Form_No != user.Farmer_Id_Form_No)
+            if (model.profileViewModel.Farmer_Id_Form_No != user.Farmer_Id_Form_No)
             {
-                user.Farmer_Id_Form_No = model.Farmer_Id_Form_No;
+                user.Farmer_Id_Form_No = model.profileViewModel.Farmer_Id_Form_No;
             }
-            if (user.Dob != model.Dob)
+            if (user.Dob != model.profileViewModel.Dob)
             {
-                user.Dob = model.Dob;
-            }
-
-            if (model.County != user.County)
-            {
-                user.County = model.County;
+                user.Dob = model.profileViewModel.Dob;
             }
 
-            if (model.SubCounty != user.SubCounty)
+            if (model.profileViewModel.County != user.County)
             {
-                user.SubCounty = model.SubCounty;
+                user.County = model.profileViewModel.County;
             }
 
-            if (model.Ward != user.Ward)
+            if (model.profileViewModel.SubCounty != user.SubCounty)
             {
-                user.Ward = model.Ward;
+                user.SubCounty = model.profileViewModel.SubCounty;
             }
 
-            if (model.Mpesa_No != user.Mpesa_No)
+            if (model.profileViewModel.Ward != user.Ward)
             {
-                user.Mpesa_No = model.Mpesa_No;
+                user.Ward = model.profileViewModel.Ward;
             }
 
-            if (model.Whatapp_No != user.Whatapp_No)
+            if (model.profileViewModel.Mpesa_No != user.Mpesa_No)
             {
-                user.Whatapp_No = model.Whatapp_No;
+                user.Mpesa_No = model.profileViewModel.Mpesa_No;
             }
 
-            if (model.Bank_Info != user.Bank_Info)
+            if (model.profileViewModel.Whatapp_No != user.Whatapp_No)
             {
-                user.Bank_Info = model.Bank_Info;
+                user.Whatapp_No = model.profileViewModel.Whatapp_No;
             }
 
-
-            if (model.KraPin != user.KraPin)
+            if (model.profileViewModel.Bank_Info != user.Bank_Info)
             {
-                user.KraPin = model.KraPin;
-            }
-
-            if (model.Next_of_Kin != user.Next_of_Kin)
-            {
-                user.Next_of_Kin = model.Next_of_Kin;
-            }
-
-            if (model.Next_of_Kin_Contact != user.Next_of_Kin_Contact)
-            {
-                user.Next_of_Kin_Contact = model.Next_of_Kin_Contact;
-            }
-
-            if (model.Acreage != user.Acreage)
-            {
-                user.Acreage = model.Acreage;
-            }
-
-            if (model.mapCoords != user.Field_Coords)
-            {
-                user.Field_Coords = model.mapCoords;
-            }
-
-            if (model.Crop != user.Crop)
-            {
-                user.Crop = model.Crop;
-            }
-
-            if (model.WalletAddress != user.WalletAddress)
-            {
-                user.WalletAddress = model.WalletAddress;
-            }
-
-            if (model.NationalIDNumber != user.NationalIDNumber)
-            {
-                user.NationalIDNumber = model.NationalIDNumber;
-            }
-
-            if (model.SerialFormNumber != user.SerialFormNumber)
-            {
-                user.SerialFormNumber = model.SerialFormNumber;
-            }
-
-            if (model.InputUsed != user.InputUsed)
-            {
-                user.InputUsed = model.InputUsed;
-            }
-
-            if (model.PlantingDate != user.PlantingDate)
-            {
-                user.PlantingDate = model.PlantingDate;
+                user.Bank_Info = model.profileViewModel.Bank_Info;
             }
 
 
-            if (model.Aggregator_Company != user.Aggregator_Company)
+            if (model.profileViewModel.KraPin != user.KraPin)
             {
-                user.Aggregator_Company = model.Aggregator_Company;
+                user.KraPin = model.profileViewModel.KraPin;
             }
 
-            if (model.Company_Registration_Number != user.CompanyRegistrationNumber)
+            if (model.profileViewModel.Next_of_Kin != user.Next_of_Kin)
             {
-                user.CompanyRegistrationNumber = model.Company_Registration_Number;
+                user.Next_of_Kin = model.profileViewModel.Next_of_Kin;
+            }
+
+            if (model.profileViewModel.Next_of_Kin_Contact != user.Next_of_Kin_Contact)
+            {
+                user.Next_of_Kin_Contact = model.profileViewModel.Next_of_Kin_Contact;
+            }
+
+            if (model.profileViewModel.Acreage != user.Acreage)
+            {
+                user.Acreage = model.profileViewModel.Acreage;
+            }
+
+            if (model.profileViewModel.mapCoords != user.Field_Coords)
+            {
+                user.Field_Coords = model.profileViewModel.mapCoords;
+            }
+
+            if (model.profileViewModel.Crop != user.Crop)
+            {
+                user.Crop = model.profileViewModel.Crop;
+            }
+
+            if (model.profileViewModel.WalletAddress != user.WalletAddress)
+            {
+                user.WalletAddress = model.profileViewModel.WalletAddress;
+            }
+
+            if (model.profileViewModel.NationalIDNumber != user.NationalIDNumber)
+            {
+                user.NationalIDNumber = model.profileViewModel.NationalIDNumber;
+            }
+
+            if (model.profileViewModel.SerialFormNumber != user.SerialFormNumber)
+            {
+                user.SerialFormNumber = model.profileViewModel.SerialFormNumber;
+            }
+
+            if (model.profileViewModel.InputUsed != user.InputUsed)
+            {
+                user.InputUsed = model.profileViewModel.InputUsed;
+            }
+
+            if (model.profileViewModel.PlantingDate != user.PlantingDate)
+            {
+                user.PlantingDate = model.profileViewModel.PlantingDate;
             }
 
 
-            if (model.Field_pin != user.Field_Pin)
+            if (model.profileViewModel.Aggregator_Company != user.Aggregator_Company)
             {
-                user.Field_Pin = model.Field_pin;
+                user.Aggregator_Company = model.profileViewModel.Aggregator_Company;
             }
 
-            if (model.Economic_Activity != user.Economic_Activity)
+            if (model.profileViewModel.Company_Registration_Number != user.CompanyRegistrationNumber)
             {
-                user.Economic_Activity = model.Economic_Activity;
-            }
-
-            if (model.Household_Size != user.Household_Size)
-            {
-                user.Household_Size = model.Household_Size;
-            }
-
-            if (model.Disability_Type != user.DisabilityType)
-            {
-                user.DisabilityType = model.Disability_Type;
+                user.CompanyRegistrationNumber = model.profileViewModel.Company_Registration_Number;
             }
 
 
-            if (model.Farmer_Id_Form_No != user.Farmer_Id_Form_No)
+            if (model.profileViewModel.Field_pin != user.Field_Pin)
             {
-                user.Farmer_Id_Form_No = model.Farmer_Id_Form_No;
-            }
-            if (model.Input_Service != user.InputService)
-            {
-                user.InputService = model.Input_Service;
+                user.Field_Pin = model.profileViewModel.Field_pin;
             }
 
-            if (model.supplier_Company != user.supplier_Company)
+            if (model.profileViewModel.Economic_Activity != user.Economic_Activity)
             {
-                user.supplier_Company = model.supplier_Company;
+                user.Economic_Activity = model.profileViewModel.Economic_Activity;
+            }
+
+            if (model.profileViewModel.Household_Size != user.Household_Size)
+            {
+                user.Household_Size = model.profileViewModel.Household_Size;
+            }
+
+            if (model.profileViewModel.Disability_Type != user.DisabilityType)
+            {
+                user.DisabilityType = model.profileViewModel.Disability_Type;
+            }
+
+
+            if (model.profileViewModel.Farmer_Id_Form_No != user.Farmer_Id_Form_No)
+            {
+                user.Farmer_Id_Form_No = model.profileViewModel.Farmer_Id_Form_No;
+            }
+            if (model.profileViewModel.Input_Service != user.InputService)
+            {
+                user.InputService = model.profileViewModel.Input_Service;
+            }
+
+            if (model.profileViewModel.supplier_Company != user.supplier_Company)
+            {
+                user.supplier_Company = model.profileViewModel.supplier_Company;
             }
 
 
@@ -384,7 +369,7 @@ namespace Mtama.Controllers
 
             if (markers != null)
             {
-                markers.LatLng = model.mapCoords;
+                markers.LatLng = model.profileViewModel.mapCoords;
                 await _context.SaveChangesAsync();
             }
             else
@@ -392,7 +377,7 @@ namespace Mtama.Controllers
 
                 var area = new MarkerModel();
                 area.UserId = user.Id;
-                area.LatLng = model.mapCoords;
+                area.LatLng = model.profileViewModel.mapCoords;
                 _context.Add(area);
                 _context.SaveChanges();
             }
@@ -409,34 +394,25 @@ namespace Mtama.Controllers
         [HttpGet]
         public async Task<IActionResult> Attachments()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            try
             {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                }
+                return View(ProfileManager.Attachments(user, StatusMessage));
+            }
+            catch (Exception)
+            {
+                // Put a good expection here
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
-            ViewData["bloburi"] = ConfigurationManager.GetAppSetting("BlobUri");
-            ViewData["sas"] = ConfigurationManager.GetAppSetting("SAS");
-            ViewData["container"] = ConfigurationManager.GetAppSetting("Container");
-
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            var model = new ProfileViewModel
-            {
-                ProfilePicture = user.ProfilePicture,
-                Fingerprint = user.Fingerprint,
-                ScannedID = user.ScannedID,
-                ScannedIDComment = user.ScannedIDComment,
-                StatusMessage = StatusMessage,
-                sasToken = ConfigurationManager.GetAppSetting("SAS")
-        };
-
-            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Attachments(ProfileViewModel model)
+        public async Task<IActionResult> Attachments(ProfileViewModelVM model)
         {
             if (!ModelState.IsValid)
             {
@@ -449,26 +425,29 @@ namespace Mtama.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            #region Data Assignment
 
-            if (model.ProfilePicture != user.ProfilePicture)
+            if (model.profileViewModel.ProfilePicture != user.ProfilePicture)
             {
-                user.ProfilePicture = model.ProfilePicture;
+                user.ProfilePicture = model.profileViewModel.ProfilePicture;
             }
 
-            if (model.Fingerprint != user.Fingerprint)
+            if (model.profileViewModel.Fingerprint != user.Fingerprint)
             {
-                user.Fingerprint = model.Fingerprint;
+                user.Fingerprint = model.profileViewModel.Fingerprint;
             }
 
-            if (model.ScannedID != user.ScannedID)
+            if (model.profileViewModel.ScannedID != user.ScannedID)
             {
-                user.ScannedID = model.ScannedID ;
+                user.ScannedID = model.profileViewModel.ScannedID ;
             }
 
-            if (model.ScannedIDComment != user.ScannedIDComment)
+            if (model.profileViewModel.ScannedIDComment != user.ScannedIDComment)
             {
-                user.ScannedIDComment = model.ScannedIDComment;
+                user.ScannedIDComment = model.profileViewModel.ScannedIDComment;
             }
+
+            #endregion
 
             await _userManager.UpdateAsync(user);
             StatusMessage = "Your Data has been Uploaded.";

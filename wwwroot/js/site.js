@@ -123,7 +123,8 @@ function showSpinnerViewTransaction() {
 
 function exitSpinnerViewTransaction() {
     $("#bodyIdViewTransaction").addClass("enablebutton");
-    spinner.stop();
+    $("#bodyIdAttachment").addClass("enablebutton");
+//    spinner.stop();
 }
 
 

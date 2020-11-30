@@ -212,8 +212,14 @@ namespace Mtama.Controllers
             return View();
         }
 
+
+
+
+        #region ToBeDeleted
+
+
         [HttpGet]
-        [Authorize(Roles = "Aggregator, Super Admin")]
+        [Authorize(Roles = "Super Admin")]
         public IActionResult RegisterFarmer(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -283,11 +289,11 @@ namespace Mtama.Controllers
         }
 
 
- 
+        #endregion
 
 
         [HttpGet]
-        [Authorize(Roles = "Super Admin,Admin,Aggregator")]
+        [Authorize(Roles = "Super Admin,Admin")]
         public IActionResult RegisterUser(string User,string AddedByAgg,string error = null, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -335,11 +341,11 @@ namespace Mtama.Controllers
                     {
                         user.Gender = "Male";
                     }
-                    if (AddedByAgg == "AddedByAgg")
-                    {
-                        var tempuser = await _userManager.GetUserAsync(User);
-                        //user.AggregatorID = tempuser.Id;
-                    }
+                    //if (AddedByAgg == "AddedByAgg")
+                    //{
+                    //    var tempuser = await _userManager.GetUserAsync(User);
+                    //    //user.AggregatorID = tempuser.Id;
+                    //}
 
 
                     var result = await _userManager.CreateAsync(user, model.Password);
@@ -357,7 +363,7 @@ namespace Mtama.Controllers
                         //await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
                         //await _signInManager.SignInAsync(user, isPersistent: false);
-                        _logger.LogInformation("User created a new account with password.");
+                        //_logger.LogInformation("User created a new account with password.");
                         //                    return RedirectToLocal(returnUrl);
                         //return RedirectToAction("Index", "Home", new { area = "" });  
                         return RedirectToAction("ViewUsers", "User");

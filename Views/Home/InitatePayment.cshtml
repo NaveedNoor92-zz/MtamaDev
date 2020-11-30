@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Initate Payment";
+    ViewData["Title"] = "Initiate Payment";
 }
 
 
@@ -9,17 +9,16 @@
 @*<script src="~/js/app.js"></script>*@
 <script src="~/js/site.js"></script>
 <script src="~/js/Spin.js"></script>
-
-
+<link href="~/css/site.css" rel="stylesheet" />
 <div class="col-lg-12">
     <div class="col-lg-1">
     </div>
-    <div class="col-lg-10" id="bodyIdAttachment">
+    <div class="col-lg-10" id="bodyIdAttachment" name="bodyIdAttachment">
         <form asp-area="" asp-controller="Home" asp-action="InitatePayments" method="get">
             <div id="spinnerattachment">
             </div>
             <input type="hidden" name="UserId" id="UserId" value="@ViewBag.UserId" />
-            <input type="hidden" name="FileName" id="FileName"  />
+            <input type="hidden" name="FileName" id="FileName" />
 
             <input type="hidden" id="sasToken" value="@ViewBag.sasToken" name="sasToken" />
 
@@ -28,17 +27,17 @@
             <input onchange="ReceiverFileSelected1('File1','scannedIdbtn')" id="File1" type="file" class="" />
             <input type="hidden" id="FileOrg" name="FileOrg" class="" />
             <br>
-            <input type="button" id="scannedIdbtn" disabled class="btn btn-primary" onclick="uploadAttachment1('File1','FileOrg','submitbtn');" value="Upload " />
+            <input type="button" id="scannedIdbtn" disabled class="btn btn-primary" onclick="App.uploadAttachment('File1','FileOrg', null,'payments');" value="Upload " />
             <br>
 
             <br>
             <label>Comments:</label>
             <br>
 
-            <textarea type="text" class="form-control" style="height:100px" required name="Comments" value="" >  </textarea>
+            <textarea type="text" class="form-control" style="height:100px" required name="Comments" value="">  </textarea>
             <br>
 
-            <button type="submit" id="submitbtn" disabled class="btn btn-success">Make Payment</button>
+            <button type="submit" id="submitbtn"  disabled class="btn btn-success">Make Payment</button>
             <br>
 
         </form>
@@ -58,87 +57,9 @@
         }
     }
 
-    function uploadAttachment1(File1, attachment, buttonId) {
-        //document.getElementById(attachment1).disabled = true;
-
-        var blobUri = "https://mtamadev.blob.core.windows.net/";
-//        var sas = document.getElementById("sasToken").value;
-        var sas = "?sv=2018-03-28&ss=bfqt&srt=sco&sp=rwdlacup&se=2020-03-30T22:18:51Z&st=2019-03-08T14:18:51Z&spr=https&sig=g9cie5XR5b4Z66jkpnRDyJlNvnCWoWDsLAa8t7chgnM%3D";
-        var container = "payments";
-
-        var file = document.getElementById(File1).files[0];
-
-        document.getElementById("FileName").value = file.name;
-
-        if (file == null || file == undefined) {
-            alert("Please choose a file to upload.");
-            return;
-        }
-
-        showSpinnerAttachment1();
-        var transactionId = file.name;
-        var fileurl = blobUri + container + '/' + transactionId;
-        var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
-
-        //use block sizes of 4MB for file sizes > 32 MB. otherwise 512KB
-        var customBlockSize = file.size > 1024 * 1024 * 32 ? 1024 * 1024 * 4 : 1024 * 512;
-        blobService.singleBlobPutThresholdInBytes = customBlockSize;
-
-        var finishedOrError = false;
-        blobService.createBlockBlobFromBrowserFile(container, transactionId, file, { blockSize: customBlockSize }, function (error, result, response) {
-            finishedOrError = true;
-            if (error) {
-                // Upload blob failed
-                alert("Upload Failed. Please reload the page. ");
-                $('#spinnerattachment').hide();
-                // alert(error);
-
-            } else {
-                // Upload successfully
-                document.getElementById(attachment).value = fileurl + sas;
-                $('#spinnerattachment').hide();
-
-                $("#bodyIdAttachment").addClass("enablebutton");
-
-                document.getElementById(buttonId).disabled = false;
-
-            }
-        });
 
 
-    }
 
-
-    function showSpinnerAttachment1() {
-
-        //$("#bodyIdAttachment").addClass("disabledbutton");
-
-        let opts = {
-            lines: 13,
-            length: 28,
-            width: 14,
-            radius: 42,
-            scale: 1,
-            corners: 1,
-            color: 'black',
-            opacity: 0.25,
-            rotate: 0,
-            direction: 1,
-            speed: 1,
-            trail: 60,
-            fps: 20,
-            zIndex: 2e9,
-            className: 'spinner',
-            top: '50%',
-            left: '50%',
-            shadow: false,
-            hwaccel: false,
-            position: 'fixed',
-        },
-            target = document.getElementById('spinnerattachment'),
-            spinner = new Spinner(opts).spin(target);
-
-    }
 
 
 

@@ -1,11 +1,11 @@
-﻿@*@model Mtama.Models.HomeViewModels.PaymentsViewModel*@
-@*@model IEnumerable<Mtama.Models.HomeViewModels.PaymentModel>*@
+﻿@*@model Mtama.Models.PaymentsViewModel*@
+@*@model IEnumerable<Mtama.Models.PaymentModel>*@
 
-@*@model X.PagedList.IPagedList<Mtama.Models.HomeViewModels.PaymentModel>
+@*@model X.PagedList.IPagedList<Mtama.Models.PaymentModel>
     @using X.PagedList.Mvc.Core;
 
     <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />*@
-@model IEnumerable<Mtama.Models.HomeViewModels.PaymentModel>
+@model IEnumerable<Mtama.Models.PaymentModel>
 @{
     ViewData["Title"] = "View Payments";
     var etherscanLink = ConfigurationManager.GetAppSetting("Etherscan");

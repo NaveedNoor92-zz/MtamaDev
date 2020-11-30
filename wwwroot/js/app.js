@@ -157,6 +157,7 @@ App = {
                 // Upload blob failed
                alert("Upload Failed. Please reload the page. ");
                 // alert(error);
+                console.log(error);
                 exitSpinnerViewTransaction();
 
             } else {
@@ -171,13 +172,12 @@ App = {
    
     },
 
-    uploadAttachment: function (attachment1, attachment, btnsubmit) {
+    uploadAttachment: function (attachment1, attachment, btnsubmit, containertemp) {
         //document.getElementById(attachment1).disabled = true;
 
         var blobUri = "https://mtamadev.blob.core.windows.net/";
         var sas = document.getElementById("sasToken").value;
-        var container = "payments";
-
+        var container = containertemp;
         var file = document.getElementById(attachment1).files[0];
 
         if (file == null || file == undefined) {
@@ -186,6 +186,7 @@ App = {
         }
 
         showSpinnerAttachment();
+        
         var transactionId = file.name;
         var fileurl = blobUri + container + '/' + transactionId;
         var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
@@ -200,14 +201,25 @@ App = {
             if (error) {
                 // Upload blob failed
                 alert("Upload Failed. Please reload the page. ");
+                console.log(error);
                 $('#spinnerattachment').hide();
                 // alert(error);
 
             } else {
                 // Upload successfully
                 document.getElementById(attachment).value = fileurl + sas;
-                document.getElementById(btnsubmit).click();
+                if (btnsubmit == null) {
+                    document.getElementById("FileName").value = transactionId;
+                    document.getElementById("submitbtn").disabled = false;
+                    $("#bodyIdAttachment").addClass("enablebutton");
+                    $('#spinnerattachment').hide();
 
+                }
+             
+                if (btnsubmit !== null) {
+                    document.getElementById(btnsubmit).click();
+                }
+                
 
             }
         });

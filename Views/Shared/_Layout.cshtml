@@ -91,7 +91,7 @@
                     @*@if (UserManager.FindByNameAsync(UserManager.GetUserName(User)).Result.ProfilePicture == null)*@
                     @if (UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture == null)
                     {
-                        <a asp-area="" id="usericon2" class="w3-bar-item glyphicon glyphicon-user" style="font-size: 36px;padding-top:5px;" asp-controller="Manage" asp-action="Profile"></a>
+                        <a asp-area="" id="usericon2" class="w3-bar-item glyphicon glyphicon-user" style="font-size: 55px" asp-controller="Manage" asp-action="Profile"></a>
                     }
                     else
                     {
