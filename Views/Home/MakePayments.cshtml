@@ -19,7 +19,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label asp-for="ReceiverWallet">Receiver Wallet</label>
-                    <input id="txtReceiverWallet" asp-for="ReceiverWallet" readonly class="form-control" />
+                    <input id="txtReceiverWallet" asp-for="ReceiverWallet"  class="form-control" />
                 </div>
                 <div class="form-group col-md-6">
                     <label asp-for="AmountInFiat">Amount In Kenyan Shilling</label>
@@ -63,9 +63,9 @@
     $(document).ready(function () {
 
         App.initMetamask();
-        $('#txtReceiverName').autocomplete({
+        @*$('#txtReceiverName').autocomplete({
             source: '@Url.Action("SearchUser", "Home")'
-        });
+        });*@
         $('#txtReceiverName').focusout(function(){
             var value = $(this).val();
             var arr = value.split("(");
@@ -76,9 +76,13 @@
         $("#AmountInFiat").focusout(async function () {
             var value = $(this).val();
             var price = parseInt(value);
+            console.log("This ran");
             let response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=KES');
             let data = await response.json();
             var price = price / data.KES;
+            
+            console.log(price);
+
             $("#AmountInEther").val(price);
         });
         //.on('autocompleteresponse autocompleteselect', function (e, ui) {

@@ -13,28 +13,25 @@ App = {
     gasLimit: 4000000, //4 million
     gasPrice: 20000000000, //50 GWEI - price per unit. 40 GWEI is hgih, 20GWEI is moderate
 
-    initMetamask: async function() {    
-        await App.initWeb3();    
-    },
+    initMetamask: async function () {    
+        if (!App.ethEnabled()) {
+            alert("Please install an Ethereum-compatible browser or extension like MetaMask to use this dApp!");
+        }        
+    }, 
 
-    initWeb3: async function() {
-        // Is there an injected web3 instance?
-        if (typeof web3 !== 'undefined') {
-            App.web3Provider = web3.currentProvider;
-        } else {
-            // If no injected web3 instance is detected, fall back to Ganache //this fallback is not secure for production scenarios
-            //App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-            //alert("Make sure to connect MetaMask browser extension.");
-            console.log("Make sure to connect MetaMask browser extension.");
-            App.noMetaMask();
-            return;
+    ethEnabled: function() {
+        if (window.ethereum) {
+            App.web3Provider = new Web3(window.ethereum);
+            window.ethereum.enable();
+            App.initAccount();
+
+            web3 = new Web3(App.web3Provider);
+            return true;
+
         }
-    
-        web3 = new Web3(App.web3Provider);
-
-        App.initAccount();	
+        return false;
     },
-
+        
     initAccount: function() {
         //init Account details    
         web3.eth.getAccounts(function(error, accounts) {
@@ -65,10 +62,23 @@ App = {
 
           if (App.contractInstance === null) {
               let data = await $.getJSON('/abi/mtama2.json');
-              App.contract = TruffleContract(data);              
+              console.log(data);
+
+
+              console.log("Data Abi");
+              console.log(data.abi);
+
+              App.contract = TruffleContract(data);
+              console.log("App.contract");
+              console.log(App.contract);
               App.contract.setProvider(App.web3Provider);
+              console.log(App.contract.setProvider);
+
               App.contractInstance = await App.contract.at(contractAddress);
-              //App.contractInstance = new web3.eth.Contract(data.abi, contractAddress);
+             // App.contractInstance = new web3.eth.Contract(data.abi, contractAddress);
+              console.log(App.contractInstance);
+
+
           }
       }
       catch (err) {
@@ -96,6 +106,15 @@ App = {
             App.showWait();
 
             let result = await App.contractInstance.startEscrow(_guid, _to, { from: App.account, value: _priceInWei, gas: App.gasLimit, gasPrice: App.gasPrice });
+
+
+
+
+            //let result = await new web3.eth.Contract(   _guid, _to, { from: App.account, value: _priceInWei, gas: App.gasLimit, gasPrice: App.gasPrice });
+            ////var result = new web3.eth.Contract(contractAddress, {
+            ////    from: _to, // default from address
+            ////    gasPrice: App.gasLimit // default gas price in wei, 20 gwei in this case
+            ////    });
             if (result.receipt.status === 0) {
                 console.log("Error in Starting Escrow: " + result);
                 throw new Error("Transaction Receipt Error. Status = 0");
