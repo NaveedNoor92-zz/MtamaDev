@@ -36,8 +36,11 @@
             @*@await Html.PartialAsync("_LoginPartial")*@
             <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
                 @*<h3 class="w3-bar-item "> Mtama Dashboard</h3>*@
+                <a class="w3-bar-item" onclick="w3_close()" style="color:white;text-align:right;background-color:none !important"> X </a>
+
                 <a asp-area="" class="w3-bar-item " style="font-size:21px;color:white; padding-top:5%" asp-controller="Home" asp-action="Index" title="Home"> Dashboard</a>
-                @if (SignInManager.IsSignedIn(User) && (!User.IsInRole("Farmer")))
+
+                @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Admin")))
                 {
                     <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="MakePayments" title="Make Transactions">Make Payments</a>
                 }
@@ -54,7 +57,7 @@
                     <a asp-area="" class="w3-bar-item " asp-controller="User" style="color:white" asp-action="ViewUsers" title="ViewUsers">Manage Users</a>
                 }
 
-                @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
+                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                 {
                     <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="ViewNotifications" title="ViewUsers">View Notifications</a>
                 }
@@ -67,64 +70,97 @@
             </form>
         </div>
     }
-    <div id="main">
-        @if (SignInManager.IsSignedIn(User))
-        {
+    <div class="w3-container">
+
+
+
+
+      
+        <div id="main">
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div class="navbar" style="background-color:white;border-color:white">
+                    @*<img src="/Content/suis.PNG" style="height: 55px;width: 100px;float: left;">*@
+                    @*<img src="~/Content/Secondary_STACKED_no_tagline.jpg"  style="height: 55px;width: 120px;float: left;">
+                <a class="btn btn-danger" style="color:white;float:right;margin:10px;" href="https://login.microsoftonline.com/common/oauth2/logout">Logout</a>*@
+
+                    <div class="">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" style="background-color:black" data-toggle="collapse" data-target=".navbar-collapse">
+                                <span class="icon-bar" style="background-color:white"></span>
+                                <span class="icon-bar" style="background-color:white"></span>
+                                <span class="icon-bar" style="background-color:white"></span>
+                            </button>
+                            @*@Html.ActionLink("Repligen Applications", "Dashboard", "Application", new { area = "" }, new { @class = "navbar-brand" })*@
+                            @*<h3 style="color:white">Repligen Applications</h3>*@
+                        </div>
+                        <div class="navbar-collapse collapse">
+                            <ul class="nav ">
+                                @*<li>@Html.ActionLink("Home", "Index", "Home")</li>
+                            <li>@Html.ActionLink("About", "About", "Home")</li>
+                            <li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
+
+
+
+                                <div class="col-lg-2 col-md-2 ">
+                                    <div id="openNav">
+                                        <div class="">
+                                            <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+                                        </div>
+                                    </div>
+                                    <div id="closeNav" style="display:none">
+                                        <div class="row">
+                                            <button class="w3-button w3-teal w3-xlarge" onclick="w3_close()">&#9776;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8 col-md-8 ">
+                                    <h1>@ViewData["Title"] </h1>
+                                </div>
+                                <div class="col-lg-2 col-md-2 ">
+                                    @*@if (UserManager.FindByNameAsync(UserManager.GetUserName(User)).Result.ProfilePicture == null)*@
+                                    @if (UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture == null)
+                                    {
+                                        <a asp-area="" id="usericon2" class="w3-bar-item glyphicon glyphicon-user" style="font-size: 55px" asp-controller="Manage" asp-action="Profile"></a>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <a asp-area="" asp-controller="Manage" asp-action="Profile">
+                                                <img id="LoggedInUser" src="@(UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture)" style="height:55px;width:55px;object-fit: contain; " alt="Profile Picture" />
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="w3-container">
+                    <hr />
+                </div>
+
+            }
+
+
             <div class="w3-container">
-                <div class="col-md-2">
-                    <div id="openNav">
-                        <div class="">
-                            <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
-                        </div>
-                    </div>
-                    <div id="closeNav" style="display:none">
-                        <div class="row">
-                            <button class="w3-button w3-teal w3-xlarge" onclick="w3_close()">&#9776;</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <h1>@ViewData["Title"] </h1>
-                </div>
-                <div class="col-md-2">
-                    @*@if (UserManager.FindByNameAsync(UserManager.GetUserName(User)).Result.ProfilePicture == null)*@
-                    @if (UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture == null)
-                    {
-                        <a asp-area="" id="usericon2" class="w3-bar-item glyphicon glyphicon-user" style="font-size: 55px" asp-controller="Manage" asp-action="Profile"></a>
-                    }
-                    else
-                    {
-                        <div>
-                            <a asp-area="" asp-controller="Manage" asp-action="Profile">
-                                <img id="LoggedInUser" src="@(UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture)" style="height:55px;width:55px;object-fit: contain; " alt="Profile Picture" />
-                            </a>
-                        </div>
-                    }
-                </div>
+                @RenderBody()
             </div>
-            <div class="w3-container">
+
+            <div class="w3-container" style="padding-top:10%">
                 <hr />
+                <footer>
+                    <p>&copy; @DateTime.Now.Year - Rex Mercury</p>
+                </footer>
             </div>
-        }
-
-
-
-
-        <div class="w3-container">
-            @RenderBody()
         </div>
-
-        <div class="w3-container" style="padding-top:10%">
-            <hr />
-            <footer>
-                <p>&copy; @DateTime.Now.Year - Rex Mercury</p>
-            </footer>
-        </div>
-    </div>
+        
 
 
-
-
-    @RenderSection("Scripts", required: false)
+        @RenderSection("Scripts", required: false)
 </body>
 </html>

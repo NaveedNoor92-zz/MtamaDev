@@ -351,9 +351,18 @@ namespace Mtama.Controllers
                 user.InputService = model.profileViewModel.Input_Service;
             }
 
+            if (model.profileViewModel.Planting_Season != user.PlantingSeason)
+            {
+                user.PlantingSeason = model.profileViewModel.Planting_Season;
+            }
+            
             if (model.profileViewModel.supplier_Company != user.supplier_Company)
             {
                 user.supplier_Company = model.profileViewModel.supplier_Company;
+            }
+             if (model.profileViewModel.Yield_Quantity != Convert.ToInt32(user.YieldQuantity))
+            {
+                user.YieldQuantity = Convert.ToString(model.profileViewModel.Yield_Quantity);
             }
 
 

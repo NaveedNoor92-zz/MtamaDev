@@ -24,6 +24,124 @@ body {
 }
 
 
+
+@media all and (min-width: 50px) {
+    body {
+        font-size: 0.1em;
+    }
+}
+
+@media all and (min-width: 100px) {
+    body {
+        font-size: 0.2em;
+    }
+}
+
+@media all and (min-width: 200px) {
+    body {
+        font-size: 0.4em;
+    }
+}
+
+@media all and (min-width: 300px) {
+    body {
+        font-size: 0.6em;
+    }
+}
+
+@media all and (min-width: 400px) {
+    body {
+        font-size: 0.8em;
+    }
+}
+
+@media all and (min-width: 500px) {
+    body {
+        font-size: 1.0em;
+    }
+}
+
+@media all and (min-width: 600px) {
+    body {
+        font-size: 1.2em;
+    }
+}
+
+@media all and (min-width: 700px) {
+    body {
+        font-size: 1.4em;
+    }
+}
+
+@media all and (min-width: 800px) {
+    body {
+        font-size: 1.6em;
+    }
+}
+
+@media all and (min-width: 900px) {
+    body {
+        font-size: 1.8em;
+    }
+}
+
+@media all and (min-width: 1000px) {
+    body {
+        font-size: 2.0em;
+    }
+}
+
+@media all and (min-width: 1100px) {
+    body {
+        font-size: 2.2em;
+    }
+}
+
+@media all and (min-width: 1200px) {
+    body {
+        font-size: 2.4em;
+    }
+}
+
+@media all and (min-width: 1300px) {
+    body {
+        font-size: 2.6em;
+    }
+}
+
+@media all and (min-width: 1400px) {
+    body {
+        font-size: 2.8em;
+    }
+}
+
+@media all and (min-width: 1500px) {
+    body {
+        font-size: 3.0em;
+    }
+}
+
+@media all and (min-width: 1500px) {
+    body {
+        font-size: 3.2em;
+    }
+}
+
+@media all and (min-width: 1600px) {
+    body {
+        font-size: 3.4em;
+    }
+}
+
+@media all and (min-width: 1700px) {
+    body {
+        font-size: 3.6em;
+    }
+}
+
+
+
+
 #mySidebar a:hover {
     background-color: orange !important;
 }
@@ -57,14 +175,15 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 350px;
     background-color: #fff;
     opacity: 0.6;
 }
 
 .spin-loader {
-    height: 100px;
-    background: url("http://i62.tinypic.com/2hzsro.gif") no-repeat center center transparent;
+    height: 500px;
+    /*    background: url("") no-repeat center center transparent;*/
+    background: url("../images/Loading.gif") no-repeat center center transparent;
     position: relative;
     top: 25%;
 }

@@ -53,7 +53,7 @@ namespace Mtama.Models
         public string DisabilityType { get; set; }
 
         [Required]
-        [Display(Name = "supplier Company")]
+        [Display(Name = "Supplier Company")]
         public string supplier_Company { get; set; }
 
         [Required]
@@ -74,7 +74,7 @@ namespace Mtama.Models
 
 
         [Required]
-        [Display(Name = "supplier Representative Phone Number")]
+        [Display(Name = "Supplier Representative Phone Number")]
         public string supplierRepresentativePhoneNumber { get; set; }
 
 

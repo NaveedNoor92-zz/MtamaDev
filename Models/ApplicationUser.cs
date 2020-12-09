@@ -134,7 +134,7 @@ namespace Mtama.Models
         public string Aggregator_Company { get; set; }
 
         [StringLength(100)]
-        [Display(Name = "supplier Company")]
+        [Display(Name = "Supplier Company")]
         public string supplier_Company { get; set; }
 
         [StringLength(50)]
@@ -151,7 +151,7 @@ namespace Mtama.Models
 
 
         [StringLength(50)]
-        [Display(Name = "supplier Representative Phone Number")]
+        [Display(Name = "Supplier Representative Phone Number")]
         public string supplierRepresentativePhoneNumber { get; set; }
 
 

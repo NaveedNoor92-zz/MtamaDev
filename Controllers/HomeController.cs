@@ -62,9 +62,11 @@ namespace Mtama.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             ViewBag.UserRole = roles[0];
             return View();
+
+            
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Super Admin , Admin")]
         [HttpGet]
         public IActionResult MakePayments(string returnUrl = null)
         {
@@ -75,7 +77,7 @@ namespace Mtama.Controllers
             return View(pm);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Super Admin , Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MakePayments(PaymentModel model, string returnUrl = null)
@@ -99,23 +101,69 @@ namespace Mtama.Controllers
         }
 
 
+
+
+        public async Task<IActionResult> MakePaymentFromAdmin(string PaymentId, string ReceiverId)
+        {
+            try
+            {
+                var model = new PaymentModel();
+                //var user = await _userManager.FindByIdAsync(ReceiverId);
+                //var modeldata = _context.Payments.Where(p => p.Id == Convert.ToInt64(PaymentId)).Include(p => p.Sender).Include(p => p.Receiver).FirstOrDefault();
+
+                //var receiver = _context.Users.Where(u => u.WalletAddress == user.WalletAddress).SingleOrDefault();
+
+                //var model = new PaymentModel();
+
+                //var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                var getPaymentData = await PaymentManager.MakePaymentFromAdmin(_context, PaymentId);
+
+                model.ReceiverId = getPaymentData.ReceiverId;
+                model.ReceiverWallet = getPaymentData.ReceiverWallet;
+                model.ReceiverName = getPaymentData.ReceiverName;
+                model.SenderIdNew = getPaymentData.SenderIdNew;
+                model.TimeStamp = DateTime.UtcNow;
+                model.TxStatus = Common.TxStatusPending;
+                model.TxGuid = Guid.NewGuid().ToString();
+
+                return View(model);
+
+
+
+                //return RedirectToAction("ViewTransaction", new { id = PaymentId});
+                //return View();
+            }
+            catch (Exception ex)
+            {
+                ViewData["Error"] = "There was an error in saving your transaction. " + ex.Message;
+                return RedirectToAction("ViewNotifications");
+            }
+
+        }
+
+
+
+
         [HttpGet]
-        public IActionResult ViewTransaction(int id)
+        public async Task<IActionResult> ViewTransaction(int id)
         {
 
 
-            if (User.IsInRole("Admin"))
+            if (User.IsInRole("Admin") || (User.IsInRole("Super Admin")))
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var payment = PaymentManager.ViewTransaction(_context, id, userId);
-
+                var sender =  await _userManager.FindByIdAsync(payment.paymentModel.SenderIdNew);
+                payment.paymentModel.Sender = sender;
                 return View(payment);
 
             }
             else
             {
-                throw new Exception("You are not authorized to view this payment");
+                //throw new Exception("You are not authorized to view this payment");
 
+                return RedirectToAction("AccessDenied", "Account");
             }
 
 
@@ -136,7 +184,7 @@ namespace Mtama.Controllers
                 //}
 
                 ViewData["ShowVerify"] = false;
-                return RedirectToAction("ViewTransaction", new { id = returnmodel.Id });
+                return RedirectToAction("ViewTransaction", new { id = returnmodel.paymentModel.Id });
             }
             catch (Exception ex)
             {
@@ -175,14 +223,30 @@ namespace Mtama.Controllers
 
         private async Task<List<PaymentModel>> GetPayments()
         {
-            if (User.IsInRole("Admin"))
+            if (User.IsInRole("Admin") || (User.IsInRole("Super Admin")))
             {
-                return await PaymentManager.GetPayments(_context);
+                var payment = await PaymentManager.GetPayments(_context);
+                foreach (var item in payment)
+                {
+                    var sender = await _userManager.FindByIdAsync(item.SenderIdNew);
+                    item.Sender = sender;
+                }
+
+                return payment;
+
             }
             else
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                return await PaymentManager.GetPayments(_context, userId);
+                
+                var payment = await PaymentManager.GetPayments(_context, userId);
+                foreach (var item in payment)
+                {
+                    var sender = await _userManager.FindByIdAsync(item.SenderIdNew);
+                    item.Sender = sender;
+                }
+
+                return payment;
             }
         }
 
@@ -316,39 +380,6 @@ namespace Mtama.Controllers
 
             //}
      
-        }
-
-
-
-        public async Task<IActionResult> MakePaymentFromAdmin(string PaymentId, string ReceiverId)
-        {
-            try
-            {
-                //var model = new PaymentModel();
-                //var user = await _userManager.FindByIdAsync(ReceiverId);
-                //var modeldata = _context.Payments.Where(p => p.Id == Convert.ToInt64(PaymentId)).Include(p => p.Sender).Include(p => p.Receiver).FirstOrDefault();
-
-                //var receiver = _context.Users.Where(u => u.WalletAddress == user.WalletAddress).SingleOrDefault();
-
-                //var model = new PaymentModel();
-
-                //var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                
-
-
-                return View(await PaymentManager.MakePaymentFromAdmin(_context,PaymentId));
-
-
-
-                //return RedirectToAction("ViewTransaction", new { id = PaymentId});
-                //return View();
-            }
-            catch (Exception ex)
-            {
-                ViewData["Error"] = "There was an error in saving your transaction. " + ex.Message;
-                return RedirectToAction("ViewNotifications");
-            }
-
         }
 
 

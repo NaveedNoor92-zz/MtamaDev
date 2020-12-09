@@ -38,8 +38,13 @@ namespace Mtama.Controllers
         [Authorize(Roles = "Super Admin, Admin, Aggregator")]
         public async Task<IActionResult> ViewUsers()
         {
-
-            return View("/Views/User/ViewUsers.cshtml", await _context.Users.ToListAsync());
+            var model = await _context.Users.ToListAsync();
+            foreach (var item in model)
+            {
+                var UserRole = await _userManager.GetRolesAsync(item);
+                item.UserRole = UserRole[0];
+            }
+            return View("/Views/User/ViewUsers.cshtml", model);
         }
 
         public async Task<IActionResult> AddUser()

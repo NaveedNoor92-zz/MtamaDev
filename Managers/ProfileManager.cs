@@ -63,8 +63,10 @@ namespace Mtama.Managers
                 Disability_Type = user.applicationUser.DisabilityType,
                 Farmer_Id_Form_No = user.applicationUser.Farmer_Id_Form_No,
                 Input_Service = user.applicationUser.InputService,
-                supplier_Company = user.applicationUser.supplier_Company
+                supplier_Company = user.applicationUser.supplier_Company,
+                Planting_Season = user.applicationUser.PlantingSeason
             };
+            model.Yield_Quantity = Convert.ToInt32(user.applicationUser.YieldQuantity);
 
             Model.profileViewModel = model;
 

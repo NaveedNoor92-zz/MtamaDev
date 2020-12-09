@@ -47,10 +47,23 @@ namespace Mtama.Controllers
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            var user = _signInManager.IsSignedIn(User);
+            //var user1 = _userManager.GetUserId(User);
+            //var user2 = _userManager.GetUserName(User);
+            //var user3 = await _userManager.GetUserAsync(User);
+            //var user4 = HttpContext.User.Identity.Name;
+            //var user5 = await _userManager.GetUserAsync(HttpContext.User);
+            
+            if (user == false)
+            {
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+                ViewData["ReturnUrl"] = returnUrl;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
@@ -324,7 +337,7 @@ namespace Mtama.Controllers
                         Gender = model.Gender,
                         Farmer_Id_Form_No = model.Farmer_Id_Form_No,
                         DisabilityType = model.DisabilityType,
-
+                        
                         supplier_Company = model.supplier_Company,
                         Aggregator_Company = model.Aggregator_Company,
                         AggregatorID = model.AggregatorID,

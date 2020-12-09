@@ -21,7 +21,11 @@ namespace Mtama.Managers
             PM.SAS = ConfigurationManager.GetAppSetting("SAS");
             PM.Container = ConfigurationManager.GetAppSetting("Container");
 
-            PM.paymentModel = _context.Payments.Where(p => p.Id == Id).Include(p => p.Sender).Include(p => p.Receiver).FirstOrDefault();
+            var temp = _context.Payments.Where(p => p.Id == Id).Include(p => p.Sender).Include(p => p.Receiver).FirstOrDefault();
+     
+
+            PM.paymentModel = temp;
+
 
             if (PM.paymentModel == null) { throw new Exception("Payment not found"); }
 

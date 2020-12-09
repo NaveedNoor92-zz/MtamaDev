@@ -114,6 +114,9 @@
             <th>
                 Company
             </th>
+            <th>
+                User Role
+            </th>
             @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
             {
                 <th>
@@ -150,7 +153,20 @@
                         @*<p>Company Name not available</p>*@
                     }
                 </td>
+                @if (item.UserRole == "supplier")
+                {
+                    <td>
+                        Supplier
+                    </td>
+                }
+                else
+                {
+                    <td>
 
+                        @Html.DisplayFor(modelItem => item.UserRole)
+                    </td>
+
+                }
                 @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
                 {
                     <td>
@@ -165,7 +181,7 @@
                 @{ index++;}
             </tr>
         }
-        
+
     </tbody>
 </table>
 

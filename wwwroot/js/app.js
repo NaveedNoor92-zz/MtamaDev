@@ -4,6 +4,7 @@ const contractAddress = "0xfdFD40896748d659F521a5A7B49b0FF0fbad8465"; //ROPSTEN
 
 App = {
     web3Provider: null,
+    web3: null,
     contract: null,
     contractInstance: null,   //ArtToken instance
     account: null, //current metamask account
@@ -13,32 +14,32 @@ App = {
     gasLimit: 4000000, //4 million
     gasPrice: 20000000000, //50 GWEI - price per unit. 40 GWEI is hgih, 20GWEI is moderate
 
-    initMetamask: async function () {    
+    initMetamask: async function () {
         if (!App.ethEnabled()) {
             alert("Please install an Ethereum-compatible browser or extension like MetaMask to use this dApp!");
-        }        
-    }, 
+        }
+    },
 
-    ethEnabled: function() {
+    ethEnabled: function () {
         if (window.ethereum) {
             App.web3Provider = new Web3(window.ethereum);
             window.ethereum.enable();
             App.initAccount();
 
-            web3 = new Web3(App.web3Provider);
+            App.web3 = new Web3(App.web3Provider);
             return true;
 
         }
         return false;
     },
-        
-    initAccount: function() {
+
+    initAccount: function () {
         //init Account details    
-        web3.eth.getAccounts(function(error, accounts) {
+        web3.eth.getAccounts(function (error, accounts) {
             if (error) {
-            console.log(error);
-            alert("Error in getting account details.");
-            return;
+                console.log(error);
+                alert("Error in getting account details.");
+                return;
             }
 
             App.account = accounts[0];
@@ -53,37 +54,21 @@ App = {
         });
     },
 
-    noMetaMask: function () {        
+    noMetaMask: function () {
         alert("Please sign into Metamask.");
     },
 
-    initContract: async function() {
-      try {
+    initContract: async function () {
+        try {
 
-          if (App.contractInstance === null) {
-              let data = await $.getJSON('/abi/mtama2.json');
-              console.log(data);
-
-
-              console.log("Data Abi");
-              console.log(data.abi);
-
-              App.contract = TruffleContract(data);
-              console.log("App.contract");
-              console.log(App.contract);
-              App.contract.setProvider(App.web3Provider);
-              console.log(App.contract.setProvider);
-
-              App.contractInstance = await App.contract.at(contractAddress);
-             // App.contractInstance = new web3.eth.Contract(data.abi, contractAddress);
-              console.log(App.contractInstance);
-
-
-          }
-      }
-      catch (err) {
-          throw err;
-      }
+            if (App.contractInstance === null) {
+                let data = await $.getJSON('/abi/mtama2.json');
+                App.contractInstance = new App.web3.eth.Contract(data.abi, contractAddress);
+            }
+        }
+        catch (err) {
+            throw err;
+        }
     },
 
     startEscrow: async function () {
@@ -105,26 +90,18 @@ App = {
 
             App.showWait();
 
-            let result = await App.contractInstance.startEscrow(_guid, _to, { from: App.account, value: _priceInWei, gas: App.gasLimit, gasPrice: App.gasPrice });
-
-
-
-
-            //let result = await new web3.eth.Contract(   _guid, _to, { from: App.account, value: _priceInWei, gas: App.gasLimit, gasPrice: App.gasPrice });
-            ////var result = new web3.eth.Contract(contractAddress, {
-            ////    from: _to, // default from address
-            ////    gasPrice: App.gasLimit // default gas price in wei, 20 gwei in this case
-            ////    });
-            if (result.receipt.status === 0) {
-                console.log("Error in Starting Escrow: " + result);
+            let result = await App.contractInstance.methods.startEscrow(_guid, _to).send({ from: App.account, value: _priceInWei, gas: App.gasLimit, gasPrice: App.gasPrice });
+            if (result.status === false) {
+                console.log("Error in Starting Escrow:");
+                console.log(result);
                 throw new Error("Transaction Receipt Error. Status = 0");
             } else {
-                if (result.receipt.transactionHash) {
-                    $("input.clsTxHash").val(result.receipt.transactionHash);
+                if (result.transactionHash) {
+                    $("input.clsTxHash").val(result.transactionHash);
                     $("#frmMakePayments").submit();
                 } else { alert("Blockchain Transaction Hash not found."); }
             }
-            
+
         }
         catch (ex) {
             console.log('Error in Starting Escrow: ' + ex);
@@ -158,7 +135,7 @@ App = {
 
 
         showSpinnerViewTransaction();
-        
+
         var temp = attachment == "senderattachment" ? "s" : "r";
         transactionId = temp + transactionId + "_" + file.name;
         var fileurl = blobUri + container + '/' + transactionId;
@@ -174,7 +151,7 @@ App = {
             finishedOrError = true;
             if (error) {
                 // Upload blob failed
-               alert("Upload Failed. Please reload the page. ");
+                alert("Upload Failed. Please reload the page. ");
                 // alert(error);
                 console.log(error);
                 exitSpinnerViewTransaction();
@@ -188,7 +165,7 @@ App = {
             }
         });
 
-   
+
     },
 
     uploadAttachment: function (attachment1, attachment, btnsubmit, containertemp) {
@@ -205,7 +182,7 @@ App = {
         }
 
         showSpinnerAttachment();
-        
+
         var transactionId = file.name;
         var fileurl = blobUri + container + '/' + transactionId;
         var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
@@ -234,11 +211,11 @@ App = {
                     $('#spinnerattachment').hide();
 
                 }
-             
+
                 if (btnsubmit !== null) {
                     document.getElementById(btnsubmit).click();
                 }
-                
+
 
             }
         });
@@ -247,5 +224,5 @@ App = {
     },
 
 
-    
+
 };
