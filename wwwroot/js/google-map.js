@@ -25,6 +25,8 @@ window.onload = function () {
     // get our map object
     map = new google.maps.Map(document.getElementById("mymaps"), myOptions);
 
+   
+
     // array to store markers that user has drawn
     var markers = [];
 
@@ -111,10 +113,15 @@ function drawPoints(markers) {
     centermarker.setMap(map);
     centermarker.setVisible(true);
 
+
     if (centermarker.getPosition().lat().toString() !== "0" && centermarker.getPosition().lng().toString() !== "-180") {
-        var coordString1 = "[{'lat': " + "'" + centermarker.getPosition().lat().toString() + "'," +
-            "'lng': " + "'" + centermarker.getPosition().lng().toString() + "'}]";
+        var coordString1 = "lat: "+ centermarker.getPosition().lat().toString() + ", " +
+            "lng: " + centermarker.getPosition().lng().toString();
+
         document.getElementById("profileViewModel_Field_pin").value = coordString1;
+        var PanToPlot = new google.maps.LatLng(centermarker.getPosition().lat().toString(), centermarker.getPosition().lng().toString());
+        map.setZoom(20);
+        map.panTo(PanToPlot);
     }
     else {
         document.getElementById("profileViewModel_Field_pin").value = "[]";

@@ -36,7 +36,7 @@ namespace Mtama.Controllers
         }
 
         [Authorize(Roles = "Super Admin, Admin, Aggregator")]
-        public async Task<IActionResult> ViewUsers()
+        public async Task<IActionResult> ViewUsers(string UserStatus = "")
         {
             var model = await _context.Users.ToListAsync();
             foreach (var item in model)
@@ -44,7 +44,11 @@ namespace Mtama.Controllers
                 var UserRole = await _userManager.GetRolesAsync(item);
                 item.UserRole = UserRole[0];
             }
-            return View("/Views/User/ViewUsers.cshtml", model);
+            if (UserStatus != "")
+            {
+                ViewBag.StatusMessage = UserStatus;
+            }
+            return View(model);
         }
 
         public async Task<IActionResult> AddUser()
@@ -110,17 +114,18 @@ namespace Mtama.Controllers
 
         [Authorize(Roles = "Super Admin")]
         [HttpGet]
-        public async Task<IActionResult> ManageUserRoles(string id)
+        public async Task<IActionResult> ManageUserRoles(string id, string StatusMessage )
         {
 
             ViewBag.userId = id;
+            ViewBag.StatusMessage = StatusMessage;
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
-
                 ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
-                return View("NotFound");
+                ViewBag.StatusMessage = $"Error: User with Id =  {id} cannot be found";
+                return RedirectToAction("ViewUsers") ;
             }
 
             var UserRole = await _userManager.GetRolesAsync(user);
@@ -165,7 +170,8 @@ namespace Mtama.Controllers
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
-                return View("NotFound");
+                ViewBag.StatusMessage = $"Error: User with Id = { id} cannot be found";
+                return RedirectToAction("ViewUser");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -174,17 +180,21 @@ namespace Mtama.Controllers
             if (!result.Succeeded)
             {
                 ModelState.AddModelError("", "Cannot remove user existing roles");
+                ViewBag.StatusMessage = "Error: Cannot remove user existing roles";
                 return View(model);
             }
 
             result = await _userManager.AddToRolesAsync(user, model.Where(x => x.IsSelected).Select(y => y.RoleName));
+
             if (!result.Succeeded)
             {
                 ModelState.AddModelError("", "Cannot add user existing roles");
+                ViewBag.StatusMessage = "Error: Cannot add user existing roles";
                 return View(model);
             }
 
-            return RedirectToAction("ManageUserRoles", new { id = id });
+            var StatusMessage = "User role successfully updated.";
+            return RedirectToAction("ManageUserRoles", new { id = id , StatusMessage = StatusMessage });
         }
     }
 }

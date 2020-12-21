@@ -203,7 +203,14 @@ namespace Mtama.Controllers
             return View(await GetPayments());
         }
 
-        
+        [Authorize(Roles = "Aggregator, Super Admin")]
+        [HttpGet]
+        public async Task<IActionResult> ViewPaymentsLinkedFarmers()
+        {
+            return View(await GetPaymentsLinkedFarmers());
+        }
+
+
         public ActionResult SearchUser(string term)
         {
             var names = _context.Users.Where(p => p.FirstName.Contains(term) || p.LastName.Contains(term)).Select(p => (p.FirstName + " " + p.LastName + " (" + p.WalletAddress + ")")).ToList();
@@ -238,7 +245,7 @@ namespace Mtama.Controllers
             else
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                
+
                 var payment = await PaymentManager.GetPayments(_context, userId);
                 foreach (var item in payment)
                 {
@@ -249,6 +256,47 @@ namespace Mtama.Controllers
                 return payment;
             }
         }
+
+
+        private async Task<List<PaymentModel>> GetPaymentsLinkedFarmers()
+        {
+            try
+            {
+                var payment = new List<PaymentModel>();
+                if (User.IsInRole("Aggregator"))
+                {
+                    var aggregator = await _userManager.GetUserAsync(User);
+                    var data = _context.AggregatorAssociations.Where(u => u.AggregatorId == aggregator.Id).ToList();
+
+                    foreach (var item1 in data)
+                    {
+                        var temp = await PaymentManager.GetPayments(_context, Convert.ToString(item1.FarmerId));
+                        foreach (var item in temp)
+                        {
+                            var sender = await _userManager.FindByIdAsync(item.SenderIdNew);
+                            item.Sender = sender;
+                            payment.Add(item);
+                        }
+                    }
+                    return payment;
+                }
+                else
+                {
+                    return payment;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return new List<PaymentModel>();
+
+            }
+        }
+
+
+
+
 
         [Authorize]
         [HttpGet]
@@ -269,11 +317,14 @@ namespace Mtama.Controllers
 
 
         [Authorize(Roles = "Super Admin,Aggregator")]
-        public async Task<IActionResult> ViewFarmers()
+        public async Task<IActionResult> ViewFarmers(string StatusMessage = "")
         {
             var aggregator = await _userManager.GetUserAsync(User);
             ViewBag.AggId = aggregator.Id;
-
+            if (StatusMessage != "")
+            {
+                ViewBag.StatusMessage = StatusMessage;
+            }
             return View(await PaymentManager.ViewFarmers(_context, _userManager, aggregator.Id));
         }
 
@@ -285,6 +336,41 @@ namespace Mtama.Controllers
             await PaymentManager.LinkAggregatorToFarmer(_context, UserId, AggId, link);
 
             return Json(link);
+
+
+            //var markers = _context.Markers.Where(u => u.UserId == user.Id).SingleOrDefault();
+            //if (markers != null)
+            //{
+            //    markers.LatLng = model.mapCoords;
+            //    await _context.SaveChangesAsync();
+            //}
+            //var result = _context.AggregatorAssociations.Add(data);
+
+        }
+
+        [Authorize(Roles = "Super Admin,Aggregator")]
+        public async Task<List<ApplicationUser>> ShowAggregatorsFarmers()
+        {
+            try
+            {
+                var users = new List<ApplicationUser>();
+
+                var aggregator = await _userManager.GetUserAsync(User);
+                var data = _context.AggregatorAssociations.Where(u => u.AggregatorId == aggregator.Id).ToList();
+
+                foreach (var item in data)
+                {
+                    var user = await _userManager.FindByIdAsync(item.FarmerId);
+                    users.Add(user);
+                }
+
+                return users;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
 
 
             //var markers = _context.Markers.Where(u => u.UserId == user.Id).SingleOrDefault();
@@ -329,9 +415,8 @@ namespace Mtama.Controllers
 
                 //return RedirectToAction("ViewTransaction", new { id = model1.Id });
 
-
-
-                return RedirectToAction("ViewFarmers");
+                ViewData["success"] = "Payment initiated successfully!";
+                return RedirectToAction("ViewFarmers", new { StatusMessage = "Payment initiated successfully!" });
 
 
 

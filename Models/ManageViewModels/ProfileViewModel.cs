@@ -121,7 +121,6 @@ namespace Mtama.Models
 
 
         //New Fields
-        [StringLength(50)]
         [Display(Name = "Field Pin")]
         public string Field_pin { get; set; }
 

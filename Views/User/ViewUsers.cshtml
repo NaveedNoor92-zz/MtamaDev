@@ -56,145 +56,150 @@
     </div>
 }
 
+<div class="container col-lg-12">
 
+    <partial name="_StatusMessage" model="@ViewBag.StatusMessage" />
+</div>
 
-@*<div class="container col-lg-12 col-md-12 ">
-            <div class="col-lg-2">
-                <form asp-area="" asp-controller="Account" asp-action="RegisterUser" method="get">
-                    <input type="hidden" name="User" value="Admin" />
-                    <button type="submit" class="btn btn-primary">Add Admin</button>
-                </form>
+    @*<a href="C:\Projects\Asp.Net Core\Mtama New\mtama\Views\Manage\_StatusMessage.cshtml">C:\Projects\Asp.Net Core\Mtama New\mtama\Views\Manage\_StatusMessage.cshtml</a>*@
+
+    @*<div class="container col-lg-12 col-md-12 ">
+                <div class="col-lg-2">
+                    <form asp-area="" asp-controller="Account" asp-action="RegisterUser" method="get">
+                        <input type="hidden" name="User" value="Admin" />
+                        <button type="submit" class="btn btn-primary">Add Admin</button>
+                    </form>
+                </div>
+                <div class="col-lg-2">
+
+                    <form asp-area="" asp-controller="Account" asp-action="RegisterUser" method="get">
+                        <input type="hidden" name="User" value="Aggregator" />
+                        <button type="submit" class="btn btn-primary">Add Aggregator</button>
+                    </form>
+                </div>
+                <div class="col-lg-2">
+
+                    <form asp-area="" asp-controller="Account" asp-action="RegisterUser" method="get">
+                        <input type="hidden" name="User" value="Supplier" />
+                        <button type="submit" class="btn btn-primary">Add Supplier</button>
+                    </form>
+                </div>
+                <div class="col-lg-2">
+
+                    <form asp-area="" asp-controller="Account" asp-action="RegisterUser" method="get">
+                        <input type="hidden" name="User" value="Farmer" />
+                        <button type="submit" class="btn btn-primary">Add Farmer</button>
+                    </form>
+
+                </div>
             </div>
-            <div class="col-lg-2">
-
-                <form asp-area="" asp-controller="Account" asp-action="RegisterUser" method="get">
-                    <input type="hidden" name="User" value="Aggregator" />
-                    <button type="submit" class="btn btn-primary">Add Aggregator</button>
-                </form>
-            </div>
-            <div class="col-lg-2">
-
-                <form asp-area="" asp-controller="Account" asp-action="RegisterUser" method="get">
-                    <input type="hidden" name="User" value="Supplier" />
-                    <button type="submit" class="btn btn-primary">Add Supplier</button>
-                </form>
-            </div>
-            <div class="col-lg-2">
-
-                <form asp-area="" asp-controller="Account" asp-action="RegisterUser" method="get">
-                    <input type="hidden" name="User" value="Farmer" />
-                    <button type="submit" class="btn btn-primary">Add Farmer</button>
-                </form>
-
-            </div>
-        </div>
-    }
-    else if (signInManager.IsSignedIn(User) && User.IsInRole("Aggregator"))
-    {
-        <form asp-area="" asp-controller="Account" asp-action="RegisterUser" method="get">
-            <input type="hidden" name="User" value="Farmer" />
-            <button type="submit" class="btn btn-primary">Add Farmer</button>
-        </form>
-    }*@
-@{
-    var index = 1;
-}
-<table id="ComplianceList" class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>
-                #
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                Company
-            </th>
-            <th>
-                User Role
-            </th>
-            @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
-            {
-                <th>
-                    Edit
-                </th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-
-        @foreach (var item in Model)
+        }
+        else if (signInManager.IsSignedIn(User) && User.IsInRole("Aggregator"))
         {
+            <form asp-area="" asp-controller="Account" asp-action="RegisterUser" method="get">
+                <input type="hidden" name="User" value="Farmer" />
+                <button type="submit" class="btn btn-primary">Add Farmer</button>
+            </form>
+        }*@
+    @{
+        var index = 1;
+    }
+    <table id="ComplianceList" class="table table-striped table-bordered">
+        <thead>
             <tr>
-                <td>
-                    @index
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    @if (item.Aggregator_Company != null)
+                <th>
+                    #
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LastName)
+                </th>
+                <th>
+                    Company
+                </th>
+                <th>
+                    User Role
+                </th>
+                @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
+                {
+                    <th>
+                        Edit
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @index
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @if (item.Aggregator_Company != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Aggregator_Company)
+                        }
+                        else if (item.supplier_Company != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.supplier_Company)
+                        }
+                        else
+                        {
+                            @*<p>Company Name not available</p>*@
+                        }
+                    </td>
+                    @if (item.UserRole == "supplier")
                     {
-                        @Html.DisplayFor(modelItem => item.Aggregator_Company)
-                    }
-                    else if (item.supplier_Company != null)
-                    {
-                        @Html.DisplayFor(modelItem => item.supplier_Company)
+                        <td>
+                            Supplier
+                        </td>
                     }
                     else
                     {
-                        @*<p>Company Name not available</p>*@
+                        <td>
+
+                            @Html.DisplayFor(modelItem => item.UserRole)
+                        </td>
+
                     }
-                </td>
-                @if (item.UserRole == "supplier")
-                {
-                    <td>
-                        Supplier
-                    </td>
-                }
-                else
-                {
-                    <td>
+                    @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
+                    {
+                        <td>
+                            <a asp-controller="Manage" asp-action="Profile" asp-route-id="@item.Id">Edit Profile</a>
+                            @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
+                            {
+                                <a>|</a>
+                                <a asp-action="ManageUserRoles" asp-route-id="@item.Id">Manage Role</a>
+                            }
+                        </td>
+                    }
+                    @{ index++;}
+                </tr>
+            }
 
-                        @Html.DisplayFor(modelItem => item.UserRole)
-                    </td>
-
-                }
-                @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
-                {
-                    <td>
-                        <a asp-controller="Manage" asp-action="Profile" asp-route-id="@item.Id">Edit Profile</a>
-                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
-                        {
-                            <a>|</a>
-                            <a asp-action="ManageUserRoles" asp-route-id="@item.Id">Manage Role</a>
-                        }
-                    </td>
-                }
-                @{ index++;}
-            </tr>
-        }
-
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
 
 
-<script>
-    $(document).ready(function () {
-        $('#ComplianceList').DataTable();
-        //$('#ComplianceList_info').css("padding", "20px");
-    });
+    <script>
+        $(document).ready(function () {
+            $('#ComplianceList').DataTable();
+            //$('#ComplianceList_info').css("padding", "20px");
+        });
 
 
-</script>
+    </script>
 
 
 

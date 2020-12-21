@@ -141,7 +141,7 @@ namespace Mtama.Models
         [Display(Name = "Company Registration Number")]
         public string CompanyRegistrationNumber { get; set; }
 
-        [StringLength(50)]
+        [StringLength(255)]
         [Display(Name = "Field Pin")]
         public string Field_Pin { get; set; }
         

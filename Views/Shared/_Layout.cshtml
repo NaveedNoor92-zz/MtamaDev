@@ -79,65 +79,39 @@
         <div id="main">
             @if (SignInManager.IsSignedIn(User))
             {
-                <div class="navbar" style="background-color:white;border-color:white">
-                    @*<img src="/Content/suis.PNG" style="height: 55px;width: 100px;float: left;">*@
-                    @*<img src="~/Content/Secondary_STACKED_no_tagline.jpg"  style="height: 55px;width: 120px;float: left;">
-                <a class="btn btn-danger" style="color:white;float:right;margin:10px;" href="https://login.microsoftonline.com/common/oauth2/logout">Logout</a>*@
+            <div class="">
 
-                    <div class="">
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle" style="background-color:black" data-toggle="collapse" data-target=".navbar-collapse">
-                                <span class="icon-bar" style="background-color:white"></span>
-                                <span class="icon-bar" style="background-color:white"></span>
-                                <span class="icon-bar" style="background-color:white"></span>
-                            </button>
-                            @*@Html.ActionLink("Repligen Applications", "Dashboard", "Application", new { area = "" }, new { @class = "navbar-brand" })*@
-                            @*<h3 style="color:white">Repligen Applications</h3>*@
-                        </div>
-                        <div class="navbar-collapse collapse">
-                            <ul class="nav ">
-                                @*<li>@Html.ActionLink("Home", "Index", "Home")</li>
-                            <li>@Html.ActionLink("About", "About", "Home")</li>
-                            <li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
-
-
-
-                                <div class="col-lg-2 col-md-2 ">
-                                    <div id="openNav">
-                                        <div class="">
-                                            <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
-                                        </div>
-                                    </div>
-                                    <div id="closeNav" style="display:none">
-                                        <div class="row">
-                                            <button class="w3-button w3-teal w3-xlarge" onclick="w3_close()">&#9776;</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-8 col-md-8 ">
-                                    <h1>@ViewData["Title"] </h1>
-                                </div>
-                                <div class="col-lg-2 col-md-2 ">
-                                    @*@if (UserManager.FindByNameAsync(UserManager.GetUserName(User)).Result.ProfilePicture == null)*@
-                                    @if (UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture == null)
-                                    {
-                                        <a asp-area="" id="usericon2" class="w3-bar-item glyphicon glyphicon-user" style="font-size: 55px" asp-controller="Manage" asp-action="Profile"></a>
-                                    }
-                                    else
-                                    {
-                                        <div>
-                                            <a asp-area="" asp-controller="Manage" asp-action="Profile">
-                                                <img id="LoggedInUser" src="@(UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture)" style="height:55px;width:55px;object-fit: contain; " alt="Profile Picture" />
-                                            </a>
-                                        </div>
-                                    }
-                                </div>
-
-                            </ul>
+                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 ">
+                    <div id="openNav">
+                        <div class="">
+                            <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
                         </div>
                     </div>
-
+                    <div id="closeNav" style="display:none">
+                        <div class="row">
+                            <button class="w3-button w3-teal w3-xlarge" onclick="w3_close()">&#9776;</button>
+                        </div>
+                    </div>
                 </div>
+                <div class="col-lg-8 col-md-8 col-sm-6 col-xs-6">
+                    <h2>@ViewData["Title"] </h2>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 ">
+                    @*@if (UserManager.FindByNameAsync(UserManager.GetUserName(User)).Result.ProfilePicture == null)*@
+                    @if (UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture == null)
+                    {
+                    <a asp-area="" id="usericon2" class="w3-bar-item glyphicon glyphicon-user" style="font-size: 55px" asp-controller="Manage" asp-action="Profile"></a>
+                    }
+                    else
+                    {
+                    <div>
+                        <a asp-area="" asp-controller="Manage" asp-action="Profile">
+                            <img id="LoggedInUser" src="@(UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture)" style="height:55px;width:55px;object-fit: contain; " alt="Profile Picture" />
+                        </a>
+                    </div>
+                    }
+                </div>
+            </div>
 
 
                 <div class="w3-container">
@@ -147,7 +121,7 @@
             }
 
 
-            <div class="w3-container">
+            <div class="">
                 @RenderBody()
             </div>
 

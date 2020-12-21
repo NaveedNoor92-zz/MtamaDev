@@ -83,6 +83,12 @@ namespace Mtama.Controllers
                     model = ProfileManager.Profile(_context, user, StatusMessage);
                     var roles = await _userManager.GetRolesAsync(user.applicationUser);
                     model.UserRole = roles[0];
+                    if (model.UserRole == "Aggregator")
+                    {
+                        model.applicationUsers = await ShowAggregatorsFarmers();
+                    }
+              
+
 
                     return View(model);
                 }
@@ -907,7 +913,40 @@ namespace Mtama.Controllers
 
 
 
+        [Authorize(Roles = "Super Admin,Aggregator")]
+        public async Task<List<ApplicationUser>> ShowAggregatorsFarmers()
+        {
+            try
+            {
+                var users = new List<ApplicationUser>();
 
+                var aggregator = await _userManager.GetUserAsync(User);
+                var data = _context.AggregatorAssociations.Where(u => u.AggregatorId == aggregator.Id).ToList();
+
+                foreach (var item in data)
+                {
+                    var user = await _userManager.FindByIdAsync(item.FarmerId);
+                    users.Add(user);
+                }
+
+                return users;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+
+            //var markers = _context.Markers.Where(u => u.UserId == user.Id).SingleOrDefault();
+            //if (markers != null)
+            //{
+            //    markers.LatLng = model.mapCoords;
+            //    await _context.SaveChangesAsync();
+            //}
+            //var result = _context.AggregatorAssociations.Add(data);
+
+        }
 
 
 

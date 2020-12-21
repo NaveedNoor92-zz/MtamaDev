@@ -9,6 +9,7 @@ namespace Mtama.VM
     public class ProfileViewModelVM
     {
         public ProfileViewModel profileViewModel { get; set; }
+        public List<ApplicationUser> applicationUsers { get; set; }
 
 
         public string UserRole { get; set; } = "";

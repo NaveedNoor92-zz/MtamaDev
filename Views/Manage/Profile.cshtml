@@ -11,6 +11,10 @@
 <script src="~/js/GoogleMapsApi.js"></script>
 <script src="~/js/google-map.js"></script>
 
+<script src="~/Latest-DataTable/jquery.dataTables.min.js"></script>
+<link href="~/Latest-DataTable/jquery.dataTables.min.css" rel="stylesheet" />
+
+
 
 <style>
     #mymaps {
@@ -41,265 +45,16 @@
     @await Html.PartialAsync("~/Views/Folder/_PartialName.cshtml")
     @await Html.PartialAsync("/Views/Folder/_PartialName.cshtml")*@
 
-<div class="w3-container">
-    <div class="col-lg-7 col-md-7">
+<div class="">
+    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
         <form method="post">
             @if (Model.UserRole == "Super Admin")
             {
-                <div>
-
-                    <div id="accordion">
-                        <h3>Personal Information</h3>
-                        <div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.WalletAddress"></label>
-                                <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
-                                <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.FirstName"></label>
-                                <input asp-for="profileViewModel.FirstName" required placeholder="First Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
-                                <span asp-validation-for="profileViewModel.FirstName" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.LastName"></label>
-                                <input asp-for="profileViewModel.LastName" placeholder="Last Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Email"></label>
-                                <div class="input-group">
-
-                                    <input asp-for="profileViewModel.Email" class="form-control" />
-                                    <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
-                                </div>
-                                <span asp-validation-for="profileViewModel.Email" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Username"></label>
-                                <input asp-for="profileViewModel.Username" readonly type="text" class="form-control" />
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
-
-
-                </div>
-            }
-            else if (Model.UserRole == "Admin")
-            {
-                <div>
-
-                    <div id="accordion">
-                        <h3>Personal Information</h3>
-                        <div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.WalletAddress"></label>
-                                <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
-                                <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.FirstName"></label>
-                                <input asp-for="profileViewModel.FirstName" required placeholder="First Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
-                                <span asp-validation-for="profileViewModel.FirstName" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.LastName"></label>
-                                <input asp-for="profileViewModel.LastName" placeholder="Last Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Email"></label>
-                                <div class="input-group">
-
-                                    <input asp-for="profileViewModel.Email" class="form-control" />
-                                    <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
-                                </div>
-                                <span asp-validation-for="profileViewModel.Email" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Username"></label>
-                                <input asp-for="profileViewModel.Username" readonly type="text" class="form-control" />
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.PhoneNumber"></label>
-                                <input asp-for="profileViewModel.PhoneNumber" type="text" placeholder="07xx xxx xxx" class="form-control" />
-                                <span asp-validation-for="profileViewModel.PhoneNumber" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Dob"> Date of Birth</label>
-                                <input asp-for="profileViewModel.Dob" type="date" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.County"></label>
-                                <input asp-for="profileViewModel.County" type="text" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="County" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.SubCounty">Sub County</label>
-                                <input asp-for="profileViewModel.SubCounty" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="Sub County" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Ward"></label>
-                                <input asp-for="profileViewModel.Ward" placeholder="Ward" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Mpesa_No"></label>
-                                <input asp-for="profileViewModel.Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Whatapp_No"></label>
-                                <input asp-for="profileViewModel.Whatapp_No " onkeypress="javascript: return onlyNumber(event, this)" placeholder="Whatsapp Number" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Next_of_Kin"></label>
-                                <input asp-for="profileViewModel.Next_of_Kin" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="Next of Kin" class="form-control" />
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Next_of_Kin_Contact"></label>
-                                <input asp-for="profileViewModel.Next_of_Kin_Contact" onkeypress="javascript: return onlyNumber(event, this)" placeholder="Next of Kin Contact Number" class="form-control" />
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
-
-
-                </div>
-            }
-            else if (Model.UserRole == "Aggregator")
-            {
-
-                <div>
-
-
-
-                    <div id="accordion">
-                        <h3>Personal Information</h3>
-                        <div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.WalletAddress"></label>
-                                <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
-                                <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.FirstName"></label>
-                                <input asp-for="profileViewModel.FirstName" required placeholder="First Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
-                                <span asp-validation-for="profileViewModel.FirstName" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.LastName"></label>
-                                <input asp-for="profileViewModel.LastName" placeholder="Last Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Email"></label>
-                                <div class="input-group">
-
-                                    <input asp-for="profileViewModel.Email" class="form-control" />
-                                    <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
-                                </div>
-                                <span asp-validation-for="profileViewModel.Email" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Username"></label>
-                                <input asp-for="profileViewModel.Username" readonly class="form-control" />
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.PhoneNumber"></label>
-                                <input asp-for="profileViewModel.PhoneNumber" placeholder="07xx xxx xxx" class="form-control" />
-                                <span asp-validation-for="profileViewModel.PhoneNumber" class="text-danger"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Aggregator_Company"></label>
-                                <input asp-for="profileViewModel.Aggregator_Company" placeholder="Aggregator/Company" class="form-control" />
-                                <span asp-validation-for="profileViewModel.Aggregator_Company" class="text-danger"></span>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Company_Registration_Number"></label>
-                                <input asp-for="profileViewModel.Company_Registration_Number" type="text" placeholder="Company Registration Number/National ID" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.KraPin"></label>
-                                <input asp-for="profileViewModel.KraPin" placeholder="Kra Pin" class="form-control" />
-                                <span asp-validation-for="profileViewModel.KraPin" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Mpesa_No"></label>
-                                <input asp-for="profileViewModel.Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Crop"></label>
-                                <input asp-for="profileViewModel.Crop" placeholder="Crop" class="form-control" />
-                            </div>
-
-
-                        </div>
-
-                        @*<h3>Plot Data</h3>
-                            <div>
-                                <div class="form-group">
-                                    <label asp-for="profileViewModel.Acreage"></label>
-                                    <input asp-for="profileViewModel.Acreage" placeholder="Acreage" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="profileViewModel.Field_Coords"></label>
-                                    <input asp-for="profileViewModel.Field_Coords" readonly placeholder="Field Coordinates" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Farm Area Map</label>
-                                    <input type="button" id="resetbtn" class="btn btn-primary pull-right" value="Reset" />
-                                    <div id="mymaps"></div>
-                                </div>
-                                <input type="hidden" asp-for="profileViewModel.mapCoords"  value="" />
-                            </div>
-
-                            <h3>Historical Data</h3>
-                            <div>
-                                <div class="form-group">
-                                    <label asp-for="profileViewModel.Crop"></label>
-                                    <input asp-for="profileViewModel.Crop" placeholder="Crop" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="profileViewModel.InputUsed"></label>
-                                    <input asp-for="profileViewModel.InputUsed" placeholder="Input Used" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="profileViewModel.PlantingDate"></label>
-                                    <input asp-for="profileViewModel.PlantingDate" placeholder="Planting Date" type="date" class="form-control" />
-                                </div>
-                            </div>*@
-
-
-                    </div>
-
-
-
-                    <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
-
-
-                </div>
-
-            }
-            else if (Model.UserRole == "Supplier" || Model.UserRole == "supplier")
-            {
-
+            <div>
 
                 <div id="accordion">
                     <h3>Personal Information</h3>
                     <div>
-
                         <div class="form-group">
                             <label asp-for="profileViewModel.WalletAddress"></label>
                             <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
@@ -327,87 +82,24 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="profileViewModel.Username"></label>
-                            <input asp-for="profileViewModel.Username" readonly class="form-control" />
+                            <input asp-for="profileViewModel.Username" readonly type="text" class="form-control" />
                         </div>
 
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.PhoneNumber"></label>
-                            <input asp-for="profileViewModel.PhoneNumber" placeholder="07xx xxx xxx" class="form-control" />
-                            <span asp-validation-for="profileViewModel.PhoneNumber" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.supplier_Company">Supplier Company</label>
-                            <input asp-for="profileViewModel.supplier_Company" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.Company_Registration_Number"></label>
-                            <input asp-for="profileViewModel.Company_Registration_Number" type="text" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.KraPin"></label>
-                            <input asp-for="profileViewModel.KraPin" placeholder="Kra Pin" maxlength="11" class="form-control" />
-                            <span asp-validation-for="profileViewModel.KraPin" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.Mpesa_No"></label>
-                            <input asp-for="profileViewModel.Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.Input_Service"></label>
-                            <input asp-for="profileViewModel.Input_Service" type="text" placeholder="Input/Service" class="form-control" />
-                        </div>
                     </div>
-
-                    @*<h3>Plot Data</h3>
-                        <div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Acreage"></label>
-                                <input asp-for="profileViewModel.Acreage" placeholder="Acreage" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Field_Coords"></label>
-                                <input asp-for="profileViewModel.Field_Coords" readonly placeholder="Field Coordinates" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label>Farm Area Map</label>
-                                <input type="button" id="resetbtn" class="btn btn-primary pull-right" value="Reset" />
-                                <div id="mymaps"></div>
-                            </div>
-                            <input type="hidden" asp-for="profileViewModel.mapCoords" value="" />
-                        </div>
-
-                        <h3>Historical Data</h3>
-                        <div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.Crop"></label>
-                                <input asp-for="profileViewModel.Crop" placeholder="Crop" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.InputUsed"></label>
-                                <input asp-for="profileViewModel.InputUsed" placeholder="Input Used" class="form-control" />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="profileViewModel.PlantingDate"></label>
-                                <input asp-for="profileViewModel.PlantingDate" placeholder="Planting Date" type="date" class="form-control" />
-                            </div>
-                        </div>*@
-
                 </div>
-
-
 
                 <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
 
+
+            </div>
             }
-            else if (Model.UserRole == "Farmer")
+            else if (Model.UserRole == "Admin")
             {
+            <div>
+
                 <div id="accordion">
                     <h3>Personal Information</h3>
                     <div>
-
                         <div class="form-group">
                             <label asp-for="profileViewModel.WalletAddress"></label>
                             <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
@@ -435,35 +127,14 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="profileViewModel.Username"></label>
-                            <input asp-for="profileViewModel.Username" readonly class="form-control" />
+                            <input asp-for="profileViewModel.Username" readonly type="text" class="form-control" />
                         </div>
 
                         <div class="form-group">
                             <label asp-for="profileViewModel.PhoneNumber"></label>
-                            <input asp-for="profileViewModel.PhoneNumber" placeholder="07xx xxx xxx" class="form-control" />
+                            <input asp-for="profileViewModel.PhoneNumber" type="text" placeholder="07xx xxx xxx" class="form-control" />
                             <span asp-validation-for="profileViewModel.PhoneNumber" class="text-danger"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.NationalIDNumber"></label>
-                            <input asp-for="profileViewModel.NationalIDNumber" placeholder="National ID" class="form-control" />
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.Farmer_Id_Form_No"></label>
-                            <input asp-for="profileViewModel.Farmer_Id_Form_No" placeholder="Farmer serial form number" class="form-control" />
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.KraPin"></label>
-                            <input asp-for="profileViewModel.KraPin" placeholder="Kra Pin" maxlength="11" class="form-control" />
-                            <span asp-validation-for="profileViewModel.KraPin" class="text-danger"></span>
-                        </div>
-                        @*//Gender Remaining*@
-
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.Disability_Type"> Disability Type</label>
-                            <input asp-for="profileViewModel.Disability_Type" placeholder="Disability Type" type="text" class="form-control" />
-                        </div>
-
                         <div class="form-group">
                             <label asp-for="profileViewModel.Dob"> Date of Birth</label>
                             <input asp-for="profileViewModel.Dob" type="date" class="form-control" />
@@ -498,17 +169,255 @@
                             <input asp-for="profileViewModel.Next_of_Kin_Contact" onkeypress="javascript: return onlyNumber(event, this)" placeholder="Next of Kin Contact Number" class="form-control" />
                         </div>
 
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+
+
+            </div>
+            }
+            else if (Model.UserRole == "Aggregator")
+            {
+
+            <div>
+
+
+
+                <div id="accordion">
+                    <h3>Personal Information</h3>
+                    <div>
                         <div class="form-group">
-                            <label asp-for="profileViewModel.Household_Size"></label>
-                            <input asp-for="profileViewModel.Household_Size" placeholder="Household Size" class="form-control" />
+                            <label asp-for="profileViewModel.WalletAddress"></label>
+                            <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
+                            <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="profileViewModel.FirstName"></label>
+                            <input asp-for="profileViewModel.FirstName" required placeholder="First Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                            <span asp-validation-for="profileViewModel.FirstName" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="profileViewModel.Economic_Activity"></label>
-                            <input asp-for="profileViewModel.Economic_Activity" placeholder="Economic Activity" class="form-control" />
+                            <label asp-for="profileViewModel.LastName"></label>
+                            <input asp-for="profileViewModel.LastName" placeholder="Last Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
                         </div>
+
+                        <div class="form-group">
+                            <label asp-for="profileViewModel.Email"></label>
+                            <div class="input-group">
+
+                                <input asp-for="profileViewModel.Email" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="profileViewModel.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="profileViewModel.Username"></label>
+                            <input asp-for="profileViewModel.Username" readonly class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="profileViewModel.PhoneNumber"></label>
+                            <input asp-for="profileViewModel.PhoneNumber" placeholder="07xx xxx xxx" class="form-control" />
+                            <span asp-validation-for="profileViewModel.PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="profileViewModel.Aggregator_Company"></label>
+                            <input asp-for="profileViewModel.Aggregator_Company" placeholder="Aggregator/Company" class="form-control" />
+                            <span asp-validation-for="profileViewModel.Aggregator_Company" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label asp-for="profileViewModel.Company_Registration_Number"></label>
+                            <input asp-for="profileViewModel.Company_Registration_Number" type="text" placeholder="Company Registration Number/National ID" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="profileViewModel.KraPin"></label>
+                            <input asp-for="profileViewModel.KraPin" placeholder="Kra Pin" class="form-control" />
+                            <span asp-validation-for="profileViewModel.KraPin" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="profileViewModel.Mpesa_No"></label>
+                            <input asp-for="profileViewModel.Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="profileViewModel.Crop"></label>
+                            <input asp-for="profileViewModel.Crop" placeholder="Crop" class="form-control" />
+                        </div>
+
+
                     </div>
 
-                    <h3>Plot Data</h3>
+                    @*<h3>Plot Data</h3>
+                        <div>
+                            <div class="form-group">
+                                <label asp-for="profileViewModel.Acreage"></label>
+                                <input asp-for="profileViewModel.Acreage" placeholder="Acreage" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="profileViewModel.Field_Coords"></label>
+                                <input asp-for="profileViewModel.Field_Coords" readonly placeholder="Field Coordinates" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Farm Area Map</label>
+                                <input type="button" id="resetbtn" class="btn btn-primary pull-right" value="Reset" />
+                                <div id="mymaps"></div>
+                            </div>
+                            <input type="hidden" asp-for="profileViewModel.mapCoords"  value="" />
+                        </div>
+                    *@
+                    <h3>Historical Data</h3>
+                    <div>
+                        @{
+                          var index = 1;
+                        }
+
+                        <h4><b> List of Linked Farmers </b></h4>
+                        <table id="LinkedFarmersList" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Index
+                                    </th>
+                                    <th>
+                                        First Name
+                                    </th>
+                                    <th>
+                                        Last Name
+                                    </th>
+                                    <th>
+                                        Crop
+                                    </th>
+                                    <th>
+                                        County
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in Model.applicationUsers)
+                                {
+                                <tr>
+                                    <td>
+                                        @index
+                                    </td>
+                                    <td>
+                                        @item.FirstName
+                                    </td>
+                                    <td>
+                                        @item.LastName
+                                    </td>
+                                    <td>
+                                        @item.Crop
+                                    </td>
+                                    <td>
+                                        @item.County
+                                    </td>
+                                    @{ index++;}
+                                </tr>
+
+
+
+                                    }
+                            </tbody>
+                        </table>
+
+                        <br>
+                        <hr />
+
+                        <h4> <b> Delivery Records </b>  </h4>
+                        <a href="/Home/ViewPaymentsLinkedFarmers">Click Here to View Farmers Payments</a>
+
+
+
+                    </div>
+
+
+
+
+                </div>
+
+
+
+                <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+
+
+            </div>
+
+            }
+            else if (Model.UserRole == "Supplier" || Model.UserRole == "supplier")
+            {
+
+
+            <div id="accordion">
+                <h3>Personal Information</h3>
+                <div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.WalletAddress"></label>
+                        <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
+                        <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.FirstName"></label>
+                        <input asp-for="profileViewModel.FirstName" required placeholder="First Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                        <span asp-validation-for="profileViewModel.FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.LastName"></label>
+                        <input asp-for="profileViewModel.LastName" placeholder="Last Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Email"></label>
+                        <div class="input-group">
+
+                            <input asp-for="profileViewModel.Email" class="form-control" />
+                            <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                        </div>
+                        <span asp-validation-for="profileViewModel.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Username"></label>
+                        <input asp-for="profileViewModel.Username" readonly class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.PhoneNumber"></label>
+                        <input asp-for="profileViewModel.PhoneNumber" placeholder="07xx xxx xxx" class="form-control" />
+                        <span asp-validation-for="profileViewModel.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.supplier_Company">Supplier Company</label>
+                        <input asp-for="profileViewModel.supplier_Company" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Company_Registration_Number"></label>
+                        <input asp-for="profileViewModel.Company_Registration_Number" type="text" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.KraPin"></label>
+                        <input asp-for="profileViewModel.KraPin" placeholder="Kra Pin" maxlength="11" class="form-control" />
+                        <span asp-validation-for="profileViewModel.KraPin" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Mpesa_No"></label>
+                        <input asp-for="profileViewModel.Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Input_Service"></label>
+                        <input asp-for="profileViewModel.Input_Service" type="text" placeholder="Input/Service" class="form-control" />
+                    </div>
+                </div>
+
+                @*<h3>Plot Data</h3>
                     <div>
                         <div class="form-group">
                             <label asp-for="profileViewModel.Acreage"></label>
@@ -519,13 +428,7 @@
                             <input asp-for="profileViewModel.Field_Coords" readonly placeholder="Field Coordinates" class="form-control" />
                         </div>
                         <div class="form-group">
-                            <label asp-for="profileViewModel.Field_pin"></label>
-                            <input asp-for="profileViewModel.Field_pin" readonly placeholder="Field_pin" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
                             <label>Farm Area Map</label>
-                            <input type="button" id="getLocation" class="btn btn-primary pull-right" value="Get Current Location" />
                             <input type="button" id="resetbtn" class="btn btn-primary pull-right" value="Reset" />
                             <div id="mymaps"></div>
                         </div>
@@ -546,24 +449,177 @@
                             <label asp-for="profileViewModel.PlantingDate"></label>
                             <input asp-for="profileViewModel.PlantingDate" placeholder="Planting Date" type="date" class="form-control" />
                         </div>
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.Yield_Quantity"></label>
-                            <input asp-for="profileViewModel.Yield_Quantity" placeholder="Yield Quantity" class="form-control" />
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.Planting_Season"></label>
-                            <input asp-for="profileViewModel.Planting_Season" placeholder="Planting Season" class="form-control" />
-                        </div>
+                    </div>*@
+
+            </div>
+
+
+
+            <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+
+            }
+            else if (Model.UserRole == "Farmer")
+            {
+            <div id="accordion">
+                <h3>Personal Information</h3>
+                <div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.WalletAddress"></label>
+                        <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
+                        <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
                     </div>
 
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.FirstName"></label>
+                        <input asp-for="profileViewModel.FirstName" required placeholder="First Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                        <span asp-validation-for="profileViewModel.FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.LastName"></label>
+                        <input asp-for="profileViewModel.LastName" placeholder="Last Name" onkeypress="javascript:return onlyAlphabets(event,this)" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Email"></label>
+                        <div class="input-group">
+
+                            <input asp-for="profileViewModel.Email" class="form-control" />
+                            <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                        </div>
+                        <span asp-validation-for="profileViewModel.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Username"></label>
+                        <input asp-for="profileViewModel.Username" readonly class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.PhoneNumber"></label>
+                        <input asp-for="profileViewModel.PhoneNumber" placeholder="07xx xxx xxx" class="form-control" />
+                        <span asp-validation-for="profileViewModel.PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.NationalIDNumber"></label>
+                        <input asp-for="profileViewModel.NationalIDNumber" placeholder="National ID" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Farmer_Id_Form_No"></label>
+                        <input asp-for="profileViewModel.Farmer_Id_Form_No" placeholder="Farmer serial form number" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.KraPin"></label>
+                        <input asp-for="profileViewModel.KraPin" placeholder="Kra Pin" maxlength="11" class="form-control" />
+                        <span asp-validation-for="profileViewModel.KraPin" class="text-danger"></span>
+                    </div>
+                    @*//Gender Remaining*@
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Disability_Type"> Disability Type</label>
+                        <input asp-for="profileViewModel.Disability_Type" placeholder="Disability Type" type="text" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Dob"> Date of Birth</label>
+                        <input asp-for="profileViewModel.Dob" type="date" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.County"></label>
+                        <input asp-for="profileViewModel.County" type="text" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="County" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.SubCounty">Sub County</label>
+                        <input asp-for="profileViewModel.SubCounty" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="Sub County" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Ward"></label>
+                        <input asp-for="profileViewModel.Ward" placeholder="Ward" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Mpesa_No"></label>
+                        <input asp-for="profileViewModel.Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Whatapp_No"></label>
+                        <input asp-for="profileViewModel.Whatapp_No " onkeypress="javascript: return onlyNumber(event, this)" placeholder="Whatsapp Number" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Next_of_Kin"></label>
+                        <input asp-for="profileViewModel.Next_of_Kin" onkeypress="javascript:return onlyAlphabets(event,this)" placeholder="Next of Kin" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Next_of_Kin_Contact"></label>
+                        <input asp-for="profileViewModel.Next_of_Kin_Contact" onkeypress="javascript: return onlyNumber(event, this)" placeholder="Next of Kin Contact Number" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Household_Size"></label>
+                        <input asp-for="profileViewModel.Household_Size" placeholder="Household Size" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Economic_Activity"></label>
+                        <input asp-for="profileViewModel.Economic_Activity" placeholder="Economic Activity" class="form-control" />
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+                <h3>Plot Data</h3>
+                <div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Acreage"></label>
+                        <input asp-for="profileViewModel.Acreage" placeholder="Acreage" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Field_Coords"></label>
+                        <input asp-for="profileViewModel.Field_Coords" readonly placeholder="Field Coordinates" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Field_pin"></label>
+                        <input asp-for="profileViewModel.Field_pin" readonly placeholder="Field_pin" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Farm Area Map</label>
+                        <input type="button" id="getLocation"  class="btn btn-primary pull-right" value="Get Current Location" />
+                        <input type="button" id="resetbtn"  class="btn btn-primary pull-right" style="margin-right: 10px;" value="Reset" />
+                        <div id="mymaps"></div>
+                    </div>
+                    <input type="hidden" asp-for="profileViewModel.mapCoords" value="" />
+                </div>
+
+                <h3>Historical Data</h3>
+                <div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Crop"></label>
+                        <input asp-for="profileViewModel.Crop" placeholder="Crop" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.InputUsed"></label>
+                        <input asp-for="profileViewModel.InputUsed" placeholder="Input Used" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.PlantingDate"></label>
+                        <input asp-for="profileViewModel.PlantingDate" placeholder="Planting Date" type="date" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Yield_Quantity">Yield Quantity (kg)</label>
+                        <input asp-for="profileViewModel.Yield_Quantity" placeholder="Yield Quantity (kg)" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="profileViewModel.Planting_Season"></label>
+                        <input asp-for="profileViewModel.Planting_Season" placeholder="Planting Season" class="form-control" />
+                    </div>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
 
             }
             else
             {
-                <h3>Nothing to display </h3>
+            <h3>Nothing to display </h3>
             }
 
 
@@ -583,7 +639,11 @@
         });
     });
 
+    $(document).ready(function () {
+        $('#LinkedFarmersList').DataTable();
+        //$('#ComplianceList_info').css("padding", "20px");
 
+    });
 
     document.getElementById("getLocation").addEventListener("click", getLocation);
     function getLocation() {
@@ -595,22 +655,105 @@
     }
 
     function showPosition(position) {
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-
-        var myLatLng = new google.maps.LatLng(lat, lng);
+        document.getElementById("resetbtn").addEventListener("click", resetFunc);
+        var myLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         // options to init map with, again arbitrary
-        var myOptions = {
-            zoom: 20,
-            center: myLatLng,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
+        //var myOptions = {
+        //    zoom: 20,
+        //    center: myLatLng,
+        //    mapTypeId: google.maps.MapTypeId.ROADMAP
+        //};
 
-        // get our map object
-        map = new google.maps.Map(document.getElementById("mymaps"), myOptions);
+        map.panTo(myLatLng);
+        map.setZoom(20);
+
+        var marker = new google.maps.Marker();
+        var markers = [];
+        marker.setPosition(myLatLng);
+        marker.setMap(map);
+        marker.setVisible(true);
+
+        // push it to the markers array
+        markers.push(marker);
+        markers_track.push(marker);
+
+        // add an event listener to each marker so that we can draw a polygon
+        // once user clicks on on of the markers in the markers array, assuming
+        // that they are ready to join up the polygon and have it drawn
+        google.maps.event.addListener(marker, 'click', function (e) {
+            drawPoints(markers);
+
+            // empty the markers array so that the user can draw a new one, without
+            // them all joining up. this is perphaps where you would want to push
+            // the markers array to a database, storing the points as latitude/longitude
+            // values so that they can be retrieved, put into an array, and drawn
+            // as a polygon again.
+            markers = [];
+        });
 
 
+
+        //// get our map object
+        //document.getElementById("mymaps").value = myOptions;
+
+        //// get our map object
+        //map = new google.maps.Map(document.getElementById("mymaps"), myOptions);
+
+
+
+
+        //// array to store markers that user has drawn
+        //var markers = [];
+
+        //if (isNaN(areaMarkers) && typeof areaMarkers !== 'undefined') {
+        //    for (i = 0; i < areaMarkers.length; i++) {
+        //        var data = areaMarkers[i];
+        //        var myLatlng = new google.maps.LatLng(data.lat, data.lng);
+        //        var marker = new google.maps.Marker({
+        //            position: myLatlng,
+        //            map: map,
+        //            title: data.title
+        //        });
+        //        markers.push(marker);
+        //        markers_track.push(marker);
+        //    }
+        //}
+
+        //drawPoints(markers);
+        //markers = [];
+        //document.getElementById("resetbtn").addEventListener("click", resetFunc);
+
+        //// add event listener to the map to get the click events and draw a marker
+        //google.maps.event.addListener(map, 'click', function (e) {
+        //    var marker = new google.maps.Marker();
+        //    marker.setPosition(e.latLng);
+        //    marker.setMap(map);
+        //    marker.setVisible(true);
+
+        //    // push it to the markers array
+        //    markers.push(marker);
+        //    markers_track.push(marker);
+
+        //    // add an event listener to each marker so that we can draw a polygon
+        //    // once user clicks on on of the markers in the markers array, assuming
+        //    // that they are ready to join up the polygon and have it drawn
+        //    google.maps.event.addListener(marker, 'click', function (e) {
+        //        drawPoints(markers);
+
+        //        // empty the markers array so that the user can draw a new one, without
+        //        // them all joining up. this is perphaps where you would want to push
+        //        // the markers array to a database, storing the points as latitude/longitude
+        //        // values so that they can be retrieved, put into an array, and drawn
+        //        // as a polygon again.
+        //        markers = [];
+        //    });
+        //});
     }
+
+
+
+
+
 
     function showError(error) {
         switch (error.code) {
@@ -628,6 +771,13 @@
                 break;
         }
     }
+
+
+
+
+
+
+
 
 
 

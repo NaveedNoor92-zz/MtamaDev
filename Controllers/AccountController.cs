@@ -379,7 +379,9 @@ namespace Mtama.Controllers
                         //_logger.LogInformation("User created a new account with password.");
                         //                    return RedirectToLocal(returnUrl);
                         //return RedirectToAction("Index", "Home", new { area = "" });  
-                        return RedirectToAction("ViewUsers", "User");
+                     
+                        var UserStatus  = "User " + model.FirstName + " " + model.LastName + " with Role "+ model.Role + " is added successfully.";
+                        return RedirectToAction("ViewUsers", "User", new { UserStatus = UserStatus });
 
                     }
                     //AddErrors(result);
@@ -392,15 +394,16 @@ namespace Mtama.Controllers
                 }
                 // If we got this far, something failed, redisplay form
                 //                return View(model);
-                return RedirectToAction("ViewUsers", "User");
+                var error1 = ViewData["Error"] = " Something went wrong. Please reload the page and try again.";
+                return RedirectToAction("ViewUsers", "User", new { UserStatus = error1 });
                 //   // return RedirectToAction("HOmeIndex");
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                var error = ViewData["Error"] = ex.Message;
                 //return View(model);
                 //return RedirectToAction("ViewUsers", "User");
-                return RedirectToAction("RegisterUser", new { User = model.Role, ex.Message });
+                return RedirectToAction("RegisterUser", new { User = model.Role, error });
             }
         }
 
