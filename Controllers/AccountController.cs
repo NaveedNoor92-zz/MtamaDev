@@ -386,7 +386,7 @@ namespace Mtama.Controllers
                     }
                     //AddErrors(result);
                     //  ViewData["Error"] = result.Errors.FirstOrDefault().Description;
-                    var error = ViewData["Error"] = " The Phonenumber you entered is already taken. Please enter a different one.";
+                    var error = ViewData["Error"] = " The Phone Number you entered is already taken. Please enter a different one.";
                     //return View(model);
 
                     //return RedirectToAction("ViewUsers", "User");

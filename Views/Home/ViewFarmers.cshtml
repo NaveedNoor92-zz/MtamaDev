@@ -19,15 +19,31 @@
 }
 
 <div class="container col-lg-12 col-md-12">
-    <partial name="_StatusMessage" model="ViewBag.StatusMessage" />
+        <partial name="_StatusMessage" model="@ViewBag.StatusMessage" />
+    </div>
+
+
+
+<div id="LinkedDiv" style="display:none" class="alert alert-success alert-dismissible" role="alert">
+    <button type="button" onclick="hidediv()" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h5> Successfully Linked. </h5>
 </div>
+
+<div id="UnlinkedDiv" style="display:none" class="alert alert-success alert-dismissible" role="alert">
+    <button type="button" onclick="hidediv()" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h5> Successfully Unlinked. </h5>
+</div>
+
+
+
+
 
 <input type="hidden" id="AggId" name="AggId" value="@ViewBag.AggId" />
 <table id="ComplianceList" class="table table-striped table-bordered">
     <thead>
         <tr>
             <th>
-                Index
+                #
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FirstName)
@@ -77,13 +93,23 @@
                         <td>
                             @if (item.AggregatorLinked == true)
                             {
-
-                                <form asp-area="" asp-controller="Home" asp-action="InitatePayment" method="post">
+                                <form asp-area="" id="form_@item.Id" asp-controller="Home" asp-action="InitatePayment" method="post">
                                     <input type="hidden" id="AggId1" name="AggId1" value="@ViewBag.AggId" />
                                     <input type="hidden" id="UserId" name="UserId" value="@item.Id" />
                                     <button type="submit" class="btn btn-primary">Initate Payment</button>
                                 </form>
                             }
+                            else
+                            {
+                                <form asp-area="" id="form_@item.Id" style="display:none" asp-controller="Home" asp-action="InitatePayment" method="post">
+                                    <input type="hidden" id="AggId1" name="AggId1" value="@ViewBag.AggId" />
+                                    <input type="hidden" id="UserId" name="UserId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-primary">Initate Payment</button>
+                                </form>
+
+                            }
+
+
                         </td>
 
 
@@ -109,6 +135,7 @@
     function LinkFarmer(UserId) {
 
         //alert("Linked");
+
         var AggId = document.getElementById("AggId").value;
         var link = "Unlink";
         if (document.getElementById(UserId).checked) {
@@ -123,8 +150,30 @@
             url: "/Home/LinkAggregatorToFarmer?UserId=" + UserId + "&" + "AggId=" + AggId + "&" + "link=" + link,
 
             success: function (response) {
-                location.reload();
+                //alert("Successfully Linked!");
+                //location.reload();
+                //console.log("response");
+                //console.log(response);
 
+
+                //console.log("UserId");
+                //console.log(UserId);
+
+                if (response === "Unlink") {
+                    document.getElementById("form_" + UserId).style.display = "none";
+                    //document.getElementById("UnlinkedDiv").style.display = "block";
+                    //document.getElementById("LinkedDiv").style.display = "none";
+                    $('#LinkedDiv').hide();
+                    $('#UnlinkedDiv').show();
+                }
+                else {
+                    document.getElementById("form_" + UserId).style.display = "block";
+                    //document.getElementById("UnlinkedDiv").style.display = "none";
+                    //document.getElementById("LinkedDiv").style.display = "block";
+                    $('#UnlinkedDiv').hide();
+                    $('#LinkedDiv').show();
+
+                }
 
             },
             error: function (error) {
@@ -133,7 +182,10 @@
         });
     }
 
-
+    function hidediv() {
+        $('#UnlinkedDiv').hide();
+        $('#LinkedDiv').hide();
+    }
 
 
 </script>

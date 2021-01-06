@@ -19,6 +19,7 @@ namespace Mtama.Models
                              " -Password lenght should be atleast 8. <br/>" +
                              " -Atleast one Number. <br/>" +
                              " -Atleast one Capital Alphabet. <br/>" +
+                             " -Atleast one Small Alphabet. <br/>" +
                              " -Atleast one Special Character.")]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]

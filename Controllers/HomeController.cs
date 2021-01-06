@@ -334,6 +334,14 @@ namespace Mtama.Controllers
         {
 
             await PaymentManager.LinkAggregatorToFarmer(_context, UserId, AggId, link);
+            if (link == "Unlink")
+            {
+                ViewBag.statusMessage = "Successfully unlinked.";
+            }
+            else
+            {
+                ViewBag.statusMessage = "Successfully linked.";
+            }
 
             return Json(link);
 
@@ -415,8 +423,8 @@ namespace Mtama.Controllers
 
                 //return RedirectToAction("ViewTransaction", new { id = model1.Id });
 
-                ViewData["success"] = "Payment initiated successfully!";
-                return RedirectToAction("ViewFarmers", new { StatusMessage = "Payment initiated successfully!" });
+                ViewData["success"] = "Payment Initiated Successfully!";
+                return RedirectToAction("ViewFarmers", new { StatusMessage = "Payment Initiated Successfully!" });
 
 
 

@@ -112,7 +112,7 @@ namespace Mtama
             });
 
             //   Add Roles and Admin Account
-          //  CreateAdminRole(serviceProvider).Wait();
+            //CreateAdminRole(serviceProvider).Wait();
         }
 
         private async Task CreateAdminRole(IServiceProvider serviceProvider)

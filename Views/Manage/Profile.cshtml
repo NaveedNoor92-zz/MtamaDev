@@ -58,7 +58,7 @@
                         <div class="form-group">
                             <label asp-for="profileViewModel.WalletAddress"></label>
                             <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
-                            <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                            <input type="button" style=" margin: 5px " class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
                         </div>
 
                         <div class="form-group">
@@ -103,7 +103,7 @@
                         <div class="form-group">
                             <label asp-for="profileViewModel.WalletAddress"></label>
                             <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
-                            <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                            <input type="button" style=" margin: 5px " class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
                         </div>
 
                         <div class="form-group">
@@ -190,7 +190,7 @@
                         <div class="form-group">
                             <label asp-for="profileViewModel.WalletAddress"></label>
                             <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
-                            <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                            <input type="button" style=" margin: 5px " class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
                         </div>
 
                         <div class="form-group">
@@ -329,7 +329,7 @@
                         <hr />
 
                         <h4> <b> Delivery Records </b>  </h4>
-                        <a href="/Home/ViewPaymentsLinkedFarmers">Click Here to View Farmers Payments</a>
+                        <a href="/Home/ViewPaymentsLinkedFarmers" style="color:white;" class="btn btn-success">Click Here to View Farmers Payments</a>
 
 
 
@@ -359,7 +359,7 @@
                     <div class="form-group">
                         <label asp-for="profileViewModel.WalletAddress"></label>
                         <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
-                        <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                        <input type="button" style=" margin: 5px " class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
                     </div>
 
                     <div class="form-group">
@@ -467,7 +467,7 @@
                     <div class="form-group">
                         <label asp-for="profileViewModel.WalletAddress"></label>
                         <input id="txtWalletAddress" asp-for="profileViewModel.WalletAddress" readonly placeholder="Wallet Address" class="form-control" />
-                        <input type="button" class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
+                        <input type="button" style=" margin: 5px " class="btn btn-primary pull-right" onclick="App.initMetamask();" value="Update Wallet Address" />
                     </div>
 
                     <div class="form-group">
@@ -581,8 +581,8 @@
 
                     <div class="form-group">
                         <label>Farm Area Map</label>
-                        <input type="button" id="getLocation"  class="btn btn-primary pull-right" value="Get Current Location" />
-                        <input type="button" id="resetbtn"  class="btn btn-primary pull-right" style="margin-right: 10px;" value="Reset" />
+                        <input type="button" id="getLocation"style=" margin: 5px "  class="btn btn-primary pull-right" value="Get Current Location" />
+                        <input type="button" id="resetbtn" class="btn btn-primary pull-right" style="margin-right: 10px; margin: 5px; " value="Reset" />
                         <div id="mymaps"></div>
                     </div>
                     <input type="hidden" asp-for="profileViewModel.mapCoords" value="" />
