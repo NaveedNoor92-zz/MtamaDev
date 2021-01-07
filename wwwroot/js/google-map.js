@@ -120,9 +120,9 @@ function drawPoints(markers) {
 
         document.getElementById("profileViewModel_Field_pin").value = coordString1;
         var PanToPlot = new google.maps.LatLng(centermarker.getPosition().lat().toString(), centermarker.getPosition().lng().toString());
-        map.setZoom(20);
+        map.setZoom(15);
         map.panTo(PanToPlot);
-    }
+    } 
     else {
         document.getElementById("profileViewModel_Field_pin").value = "[]";
     }
