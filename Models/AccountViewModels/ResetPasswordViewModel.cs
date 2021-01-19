@@ -14,7 +14,7 @@ namespace Mtama.Models
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
-        [RegularExpression("^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
+        [RegularExpression("^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).*$",
              ErrorMessage = "Invalid password format <br/>" +
                              " -Password lenght should be atleast 8. <br/>" +
                              " -Atleast one Number. <br/>" +

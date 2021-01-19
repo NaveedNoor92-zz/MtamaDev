@@ -42,7 +42,7 @@
 
                 @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Admin")))
                 {
-                    <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="MakePayments" title="Make Transactions">Make Payments</a>
+                    <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="MakePayments" title="Make Transactions">Authorise Payments</a>
                 }
                 <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="ViewPayments" title="View Payments">View Payments</a>
                 <a asp-area="" class="w3-bar-item " asp-controller="Manage" style="color:white" asp-action="Profile" title="Profile">View Account</a>
@@ -55,6 +55,11 @@
                 @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
                 {
                     <a asp-area="" class="w3-bar-item " asp-controller="User" style="color:white" asp-action="ViewUsers" title="ViewUsers">Manage Users</a>
+                }
+
+                @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Admin")))
+                {
+                    <a asp-area="" class="w3-bar-item " asp-controller="User" style="color:white" asp-action="ViewUsers" title="ViewUsers">View Users</a>
                 }
 
                 @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))

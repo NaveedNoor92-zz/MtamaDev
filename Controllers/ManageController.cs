@@ -55,13 +55,17 @@ namespace Mtama.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Super Admin,Admin,Aggregator,Farmer,supplier")]
-        public async Task<IActionResult> Profile(string id)
+        public async Task<IActionResult> Profile(string id , bool readOnlyView = false)
         {
             ProfileViewModelVM model = new ProfileViewModelVM();
             ApplicationUser1ModelVM user = new ApplicationUser1ModelVM();
 
             try
             {
+                if (readOnlyView != false)
+                {
+                    ViewBag.readOnlyView = true;
+                }
                 if (id != null)
                 {
                     user.applicationUser = _context.Users.Where(u => u.Id == id).SingleOrDefault();
@@ -76,8 +80,6 @@ namespace Mtama.Controllers
                 {
                     throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
                 }
-
-
                 else
                 {
                     model = ProfileManager.Profile(_context, user, StatusMessage);

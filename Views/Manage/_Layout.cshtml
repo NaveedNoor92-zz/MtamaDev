@@ -4,7 +4,15 @@
 
 
 <div>
-    <h4>Change account settings</h4>
+    @if (ViewBag.readOnlyView == true)
+    {
+        <h4>View Account settings</h4>
+    }
+    else
+    {
+        <h4>Change Account settings</h4>
+    }
+
     <hr />
     <div class="w3-container col-lg-12 col-md-12">
         <div class="col-md-3 col-lg-3">

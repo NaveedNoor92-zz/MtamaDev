@@ -31,6 +31,11 @@
     }
 </style>
 
+
+
+
+
+
 <h4>@ViewData["Title"]</h4>
 @*@Html.Partial("_StatusMessage", Model.profileViewModel.StatusMessage)*@
 <script>var areaMarkers = @Html.Raw(Model.Markers);</script>
@@ -50,7 +55,7 @@
 
 <div class="">
     <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-        <form method="post">
+        <form id="target" method="post">
             @if (Model.UserRole == "Super Admin")
             {
                 <div>
@@ -90,8 +95,10 @@
 
                         </div>
                     </div>
-
-                    <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+                    @if (ViewBag.readOnlyView != true)
+                    {
+                        <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+                    }
 
 
                 </div>
@@ -175,8 +182,10 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
-
+                    @if (ViewBag.readOnlyView != true)
+                    {
+                        <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+                    }
 
                 </div>
             }
@@ -344,9 +353,10 @@
                     </div>
 
 
-
-                    <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
-
+                    @if (ViewBag.readOnlyView != true)
+                    {
+                        <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+                    }
 
                 </div>
 
@@ -414,10 +424,7 @@
                             <label asp-for="profileViewModel.Mpesa_No"></label>
                             <input asp-for="profileViewModel.Mpesa_No" type="text" placeholder="Mpesa Number" class="form-control" />
                         </div>
-                        <div class="form-group">
-                            <label asp-for="profileViewModel.Input_Service"></label>
-                            <input asp-for="profileViewModel.Input_Service" type="text" placeholder="Input/Service" class="form-control" />
-                        </div>
+
                     </div>
 
                     @*<h3>Plot Data</h3>
@@ -437,29 +444,34 @@
                             </div>
                             <input type="hidden" asp-for="profileViewModel.mapCoords" value="" />
                         </div>
+                    *@
+                    <h3>Historical Data</h3>
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="profileViewModel.Input_Service"></label>
+                            <input asp-for="profileViewModel.Input_Service" type="text" placeholder="Input/Service" class="form-control" />
+                        </div>
 
-                        <h3>Historical Data</h3>
-                        <div>
-                            <div class="form-group">
+
+                        @*<div class="form-group">
                                 <label asp-for="profileViewModel.Crop"></label>
                                 <input asp-for="profileViewModel.Crop" placeholder="Crop" class="form-control" />
                             </div>
                             <div class="form-group">
                                 <label asp-for="profileViewModel.InputUsed"></label>
-                                <input asp-for="profileViewModel.InputUsed" placeholder="Input Used" class="form-control" />
+                                <input asp-for="profileViewModel.InputUsed" placeholder="Inputs Used" class="form-control" />
                             </div>
                             <div class="form-group">
                                 <label asp-for="profileViewModel.PlantingDate"></label>
                                 <input asp-for="profileViewModel.PlantingDate" placeholder="Planting Date" type="date" class="form-control" />
-                            </div>
-                        </div>*@
+                            </div>*@
+                    </div>
 
                 </div>
-
-
-
-                <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
-
+                @if (ViewBag.readOnlyView != true)
+                {
+                    <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+                }
             }
             else if (Model.UserRole == "Farmer")
             {
@@ -509,7 +521,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="profileViewModel.Farmer_Id_Form_No"></label>
-                            <input asp-for="profileViewModel.Farmer_Id_Form_No" placeholder="Farmer serial form number" class="form-control" />
+                            <input asp-for="profileViewModel.Farmer_Id_Form_No" placeholder="Farmer Serial Form Number" class="form-control" />
                         </div>
                         <div class="form-group">
                             <label asp-for="profileViewModel.KraPin"></label>
@@ -599,7 +611,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="profileViewModel.InputUsed"></label>
-                            <input asp-for="profileViewModel.InputUsed" placeholder="Input Used" class="form-control" />
+                            <input asp-for="profileViewModel.InputUsed" placeholder="Inputs Used" class="form-control" />
                         </div>
                         <div class="form-group">
                             <label asp-for="profileViewModel.PlantingDate"></label>
@@ -617,8 +629,10 @@
 
                 </div>
 
-                <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
-
+                @if (ViewBag.readOnlyView != true)
+                {
+                    <button type="submit" class="btn btn-default form-control text-center" style="background-color:darkorange; color:white">Save</button>
+                }
             }
             else
             {
@@ -629,6 +643,14 @@
         </form>
     </div>
 </div>
+
+
+@if (ViewBag.readOnlyView == true)
+{
+    <script>
+        $("#target input").prop("disabled", true);
+    </script>
+}
 
 
 
@@ -668,7 +690,7 @@
         //};
 
         map.panTo(myLatLng);
-        map.setZoom(20);
+        map.setZoom(15);
 
         var marker = new google.maps.Marker();
         var markers = [];

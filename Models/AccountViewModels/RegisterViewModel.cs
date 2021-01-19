@@ -83,7 +83,7 @@ namespace Mtama.Models
 
 
         [Required]
-        [RegularExpression("^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
+        [RegularExpression("^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).*$",
             ErrorMessage = "Passwords must be at least 8 characters and contain the following:<br/>" +
                             " -Password lenght should be atleast 8. <br/>" +
                             " -Atleast one Number. <br/>" +
