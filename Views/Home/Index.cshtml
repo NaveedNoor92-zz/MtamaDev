@@ -2,21 +2,22 @@
     ViewData["Title"] = "Dashboard";
 }
 
-
-<div class=" col-lg-12 col-md-12">
-    <div class="col-md-4 text-center ">
+@if (ViewBag.UserRole == "Admin")
+{
+<div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-md-4 col-lg-4 col-sm-4 text-center" style="margin-bottom:5%;">
         <div class="contain">
 
             @*<a class="fa fa-money" style="font-size:36px; color:orange"></a>*@
             <a asp-area="" class="w3-bar-item glyphicon glyphicon-usd" style="font-size: 36px; color:orange" asp-controller="Home" asp-action="MakePayments"></a>
-            <h3>Make Payments</h3>
-            <p>Transfer value to another accounts.</p>
+            <h3>Authorise Payments</h3>
+            <p>Transfer value to another account.</p>
 
             <a asp-area="" class="w3-bar-item btn-link" asp-controller="Home" asp-action="MakePayments" title="Payments">View</a>
 
         </div>
     </div>
-    <div class="col-md-4 text-center ">
+    <div class="col-md-4 col-lg-4  col-sm-4 text-center" style="margin-bottom:5%;">
         <div class="contain ">
 
             @*<a class="fa fa-calendar" style="font-size:36px; color:orange"></a>*@
@@ -29,21 +30,55 @@
 
         </div>
     </div>
-    <div class="col-md-4 text-center ">
+    <div class="col-md-4 col-lg-4 col-sm-4 text-center "style="margin-bottom:5%;">
         <div class="contain ">
 
             @*<a class="fa fa-user" style="font-size:36px; color:orange"></a>*@
             <a asp-area="" class="w3-bar-item glyphicon glyphicon-user" style="font-size: 36px; color:orange" asp-controller="Manage" asp-action="Profile"></a>
 
             <h3>Account</h3>
-            <p>View current profile. Edit.</p>
+            <p>View current profile.</p>
             <a asp-area="" class="w3-bar-item btn-link" asp-controller="Manage" asp-action="Profile" title="Manage">View</a>
 
         </div>
     </div>
 
 </div>
+}
+else
+{
+<div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+    <div class="col-md-2 col-sm-2 col-lg-2 text-center ">
+    </div>
+    <div class="col-md-4 col-lg-4 col-sm-4 text-center " style="margin-bottom:5%;">
+        <div class="contain ">
 
+            @*<a class="fa fa-calendar" style="font-size:36px; color:orange"></a>*@
+            <a asp-area="" class="w3-bar-item glyphicon glyphicon-calendar" style="font-size: 36px; color:orange" asp-controller="Home" asp-action="ViewPayments"></a>
+
+            <h3>View Payments</h3>
+            <p>View the transaction history.</p>
+
+            <a asp-area="" class="w3-bar-item btn-link" asp-controller="Home" asp-action="ViewPayments" title="Manage">View</a>
+
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-4 col-sm-4 text-center " style="margin-bottom:5%;">
+        <div class="contain ">
+
+            @*<a class="fa fa-user" style="font-size:36px; color:orange"></a>*@
+            <a asp-area="" class="w3-bar-item glyphicon glyphicon-user" style="font-size: 36px; color:orange" asp-controller="Manage" asp-action="Profile"></a>
+
+            <h3>Account</h3>
+            <p>View current profile.</p>
+            <a asp-area="" class="w3-bar-item btn-link" asp-controller="Manage" asp-action="Profile" title="Manage">View</a>
+
+        </div>
+    </div>
+    <div class="col-md-2 col-sm-2 col-lg-2 text-center ">
+    </div>
+</div>
+}
 
 
 

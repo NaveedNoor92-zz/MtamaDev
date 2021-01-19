@@ -11,7 +11,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <script src="~/Latest-DataTable/jquery-3.5.1.js"></script>
+    <script src="~/js/jquery.js"></script>
+
+    <script src="~/js/web3.min.js"></script>
+    <script src="~/js/truffle-contract.js"></script>
+    <script src="~/js/app.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/js/Spin.js"></script>
+    @*<script src="https://maps.google.com/maps/api/js"></script>
+        <script src="~/js/google-map.js"></script>*@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+
 
 
     <title>@ViewData["Title"] - Mtama</title>
@@ -25,10 +36,13 @@
             @*@await Html.PartialAsync("_LoginPartial")*@
             <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
                 @*<h3 class="w3-bar-item "> Mtama Dashboard</h3>*@
+                <a class="w3-bar-item" onclick="w3_close()" style="color:white;text-align:right;background-color:none !important"> X </a>
+
                 <a asp-area="" class="w3-bar-item " style="font-size:21px;color:white; padding-top:5%" asp-controller="Home" asp-action="Index" title="Home"> Dashboard</a>
-                @if (SignInManager.IsSignedIn(User) && (!User.IsInRole("Farmer")))
+
+                @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Admin")))
                 {
-                    <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="MakePayments" title="Make Transactions">Make Payments</a>
+                    <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="MakePayments" title="Make Transactions">Authorise Payments</a>
                 }
                 <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="ViewPayments" title="View Payments">View Payments</a>
                 <a asp-area="" class="w3-bar-item " asp-controller="Manage" style="color:white" asp-action="Profile" title="Profile">View Account</a>
@@ -38,12 +52,17 @@
                     <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="ViewFarmers" title="ViewFarmers">View Farmers</a>
                 }
 
-                @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
+                @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
                 {
                     <a asp-area="" class="w3-bar-item " asp-controller="User" style="color:white" asp-action="ViewUsers" title="ViewUsers">Manage Users</a>
                 }
 
-                @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
+                @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Admin")))
+                {
+                    <a asp-area="" class="w3-bar-item " asp-controller="User" style="color:white" asp-action="ViewUsers" title="ViewUsers">View Users</a>
+                }
+
+                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                 {
                     <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="ViewNotifications" title="ViewUsers">View Notifications</a>
                 }
@@ -56,11 +75,18 @@
             </form>
         </div>
     }
-    <div id="main">
-        @if (SignInManager.IsSignedIn(User))
-        {
-            <div class="w3-container">
-                <div class="col-md-2">
+    <div class="w3-container">
+
+
+
+
+      
+        <div id="main">
+            @if (SignInManager.IsSignedIn(User))
+            {
+            <div class="">
+
+                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 ">
                     <div id="openNav">
                         <div class="">
                             <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
@@ -72,56 +98,48 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
-                    <h1>@ViewData["Title"] </h1>
+                <div class="col-lg-8 col-md-8 col-sm-6 col-xs-6">
+                    <h2>@ViewData["Title"] </h2>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 ">
                     @*@if (UserManager.FindByNameAsync(UserManager.GetUserName(User)).Result.ProfilePicture == null)*@
                     @if (UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture == null)
                     {
-                        <a asp-area="" id="usericon2" class="w3-bar-item glyphicon glyphicon-user" style="font-size: 36px;padding-top:5px;" asp-controller="Manage" asp-action="Profile"></a>
+                    <a asp-area="" id="usericon2" class="w3-bar-item glyphicon glyphicon-user" style="font-size: 55px" asp-controller="Manage" asp-action="Profile"></a>
                     }
                     else
                     {
-                        <div>
-                            <a asp-area="" asp-controller="Manage" asp-action="Profile">
-                                <img id="LoggedInUser" src="@(UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture)" style="height:55px;width:55px;object-fit: contain; " alt="Profile Picture" />
-                            </a>
-                        </div>
+                    <div>
+                        <a asp-area="" asp-controller="Manage" asp-action="Profile">
+                            <img id="LoggedInUser" src="@(UserManager.FindByIdAsync(UserManager.GetUserId(User)).Result.ProfilePicture)" style="height:55px;width:55px;object-fit: contain; " alt="Profile Picture" />
+                        </a>
+                    </div>
                     }
                 </div>
             </div>
-            <div class="w3-container">
-                <hr />
+
+
+                <div class="w3-container">
+                    <hr />
+                </div>
+
+            }
+
+
+            <div class="">
+                @RenderBody()
             </div>
-        }
 
-
-
-
-        <div class="w3-container">
-            @RenderBody()
+            <div class="w3-container" style="padding-top:10%">
+                <hr />
+                <footer>
+                    <p>&copy; @DateTime.Now.Year - Rex Mercury</p>
+                </footer>
+            </div>
         </div>
-
-        <div class="w3-container" style="padding-top:10%">
-            <hr />
-            <footer>
-                <p>&copy; @DateTime.Now.Year - Rex Mercury</p>
-            </footer>
-        </div>
-    </div>
-
-    <script src="~/js/web3.min.js"></script>
-    <script src="~/js/truffle-contract.js"></script>
-    <script src="~/js/app.js"></script>
-    <script src="~/js/site.js"></script>
-    <script src="~/js/Spin.js"></script>
-    <script src="https://maps.google.com/maps/api/js"></script>
-    <script src="~/js/google-map.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        
 
 
-
-    @RenderSection("Scripts", required: false)
+        @RenderSection("Scripts", required: false)
 </body>
 </html>

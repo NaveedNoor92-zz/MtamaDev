@@ -53,7 +53,7 @@ namespace Mtama.Models
         public string DisabilityType { get; set; }
 
         [Required]
-        [Display(Name = "supplier Company")]
+        [Display(Name = "Supplier Company")]
         public string supplier_Company { get; set; }
 
         [Required]
@@ -74,7 +74,7 @@ namespace Mtama.Models
 
 
         [Required]
-        [Display(Name = "supplier Representative Phone Number")]
+        [Display(Name = "Supplier Representative Phone Number")]
         public string supplierRepresentativePhoneNumber { get; set; }
 
 
@@ -83,11 +83,12 @@ namespace Mtama.Models
 
 
         [Required]
-        [RegularExpression("^((?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])|(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^a-zA-Z0-9])|(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[^a-zA-Z0-9])|(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^a-zA-Z0-9])).{8,}$",
-            ErrorMessage = "Passwords must be at least 8 characters and contain atleast 3 of 4 of the following:<br/>" +
+        [RegularExpression("^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).*$",
+            ErrorMessage = "Passwords must be at least 8 characters and contain the following:<br/>" +
                             " -Password lenght should be atleast 8. <br/>" +
                             " -Atleast one Number. <br/>" +
                             " -Atleast one Capital Alphabet. <br/>" +
+                            " -Atleast one Small Alphabet. <br/>" +
                             " -Atleast one Special Character.")]   
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
         //[RegularExpression("^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$", 

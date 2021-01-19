@@ -19,7 +19,7 @@ namespace Mtama.Models
         public string LastName { get; set; }
 
         [StringLength(50)]
-        [Display(Name = "Farmer From Id Number")]
+        [Display(Name = "Farmer Serial Form Number")]
         public string Farmer_Id_Form_No { get; set; }
 
         [StringLength(50)]
@@ -106,7 +106,7 @@ namespace Mtama.Models
         [Display(Name = "Serial Form Number")]
         public string SerialFormNumber { get; set; }
 
-        [Display(Name = "Input Used")]
+        [Display(Name = "Inputs Used")]
         public string InputUsed { get; set; }
 
         [StringLength(50)]
@@ -114,7 +114,7 @@ namespace Mtama.Models
         public string PlantingDate { get; set; }
 
         [StringLength(50)]
-        [Display(Name = "Input Service")]
+        [Display(Name = "Input Services")]
         public string InputService { get; set; }
 
         [StringLength(50)]
@@ -134,14 +134,14 @@ namespace Mtama.Models
         public string Aggregator_Company { get; set; }
 
         [StringLength(100)]
-        [Display(Name = "supplier Company")]
+        [Display(Name = "Supplier Company")]
         public string supplier_Company { get; set; }
 
         [StringLength(50)]
         [Display(Name = "Company Registration Number")]
         public string CompanyRegistrationNumber { get; set; }
 
-        [StringLength(50)]
+        [StringLength(255)]
         [Display(Name = "Field Pin")]
         public string Field_Pin { get; set; }
         
@@ -151,7 +151,7 @@ namespace Mtama.Models
 
 
         [StringLength(50)]
-        [Display(Name = "supplier Representative Phone Number")]
+        [Display(Name = "Supplier Representative Phone Number")]
         public string supplierRepresentativePhoneNumber { get; set; }
 
 

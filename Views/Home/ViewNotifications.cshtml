@@ -4,7 +4,7 @@
 }
 
 
-@model IEnumerable<Mtama.Models.HomeViewModels.PaymentModel>
+@model IEnumerable<Mtama.Models.PaymentModel>
 @inject SignInManager<ApplicationUser> signInManager;
 
 
@@ -30,7 +30,7 @@
                 Comments
             </th>
             <th>
-                Make Payment
+                Authorise Payment
             </th>
 
         </tr>
@@ -38,8 +38,8 @@
     <tbody>
         @foreach (var item in Model)
         {
-            if (item.TxStatus == "Draft")
-            {
+                if (item.TxStatus == "Draft")
+                {
                 <tr>
                     <td>
                         @index
@@ -56,7 +56,7 @@
 
                             <input type="hidden" name="PaymentId" id="UserId" value="@item.Id" />
                             <input type="hidden" name="ReceiverId" id="ReceiverId" value="@item.ReceiverId" />
-                            <button type="submit" id="submitbtn" class="btn btn-success">Make Payment</button>
+                            <button type="submit" id="submitbtn" class="btn btn-success">Authorise Payment</button>
 
 
                         </form>

@@ -24,7 +24,7 @@ namespace Mtama.Controllers
         private RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-      
+
         public UserController(
           ApplicationDbContext context,
           UserManager<ApplicationUser> userManager,
@@ -36,10 +36,19 @@ namespace Mtama.Controllers
         }
 
         [Authorize(Roles = "Super Admin, Admin, Aggregator")]
-        public async Task<IActionResult> ViewUsers()
+        public async Task<IActionResult> ViewUsers(string UserStatus = "")
         {
-            
-            return View("/Views/User/ViewUsers.cshtml", await _context.Users.ToListAsync());
+            var model = await _context.Users.ToListAsync();
+            foreach (var item in model)
+            {
+                var UserRole = await _userManager.GetRolesAsync(item);
+                item.UserRole = UserRole[0];
+            }
+            if (UserStatus != "")
+            {
+                ViewBag.StatusMessage = UserStatus;
+            }
+            return View(model);
         }
 
         public async Task<IActionResult> AddUser()
@@ -104,33 +113,49 @@ namespace Mtama.Controllers
         //}
 
         [Authorize(Roles = "Super Admin")]
-        [HttpGet] 
-        public async Task<IActionResult> ManageUserRoles(string id)
+        [HttpGet]
+        public async Task<IActionResult> ManageUserRoles(string id, string StatusMessage )
         {
-            
+
             ViewBag.userId = id;
+            ViewBag.StatusMessage = StatusMessage;
             var user = await _userManager.FindByIdAsync(id);
 
-            if(user == null)
+            if (user == null)
             {
                 ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
-                return View("NotFound");
+                ViewBag.StatusMessage = $"Error: User with Id =  {id} cannot be found";
+                return RedirectToAction("ViewUsers") ;
             }
-            var model = new List<UserRoleViewModel>();
-            foreach (var role in _roleManager.Roles) {
 
+            var UserRole = await _userManager.GetRolesAsync(user);
+
+            var model = new List<UserRoleViewModel>();
+            foreach (var role in _roleManager.Roles)
+            {
                 var userRoleViewModel = new UserRoleViewModel
                 {
                     RoleId = role.Id,
                     RoleName = role.Name
                 };
-                if (await _userManager.IsInRoleAsync(user, role.Name))
+                if (role.Name == UserRole[0])
                 {
                     userRoleViewModel.IsSelected = true;
                 }
-                else {
+                else
+                {
                     userRoleViewModel.IsSelected = false;
                 }
+
+
+
+                //if (await _userManager.IsInRoleAsync(user, role.Name))
+                //{
+                //    userRoleViewModel.IsSelected = true;
+                //}
+                //else {
+                //    userRoleViewModel.IsSelected = false;
+                //}
                 model.Add(userRoleViewModel);
             }
 
@@ -145,7 +170,8 @@ namespace Mtama.Controllers
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
-                return View("NotFound");
+                ViewBag.StatusMessage = $"Error: User with Id = { id} cannot be found";
+                return RedirectToAction("ViewUser");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -154,17 +180,21 @@ namespace Mtama.Controllers
             if (!result.Succeeded)
             {
                 ModelState.AddModelError("", "Cannot remove user existing roles");
+                ViewBag.StatusMessage = "Error: Cannot remove user existing roles";
                 return View(model);
             }
 
-            result = await _userManager.AddToRolesAsync(user, model.Where(x => x.IsSelected).Select(y=> y.RoleName));
+            result = await _userManager.AddToRolesAsync(user, model.Where(x => x.IsSelected).Select(y => y.RoleName));
+
             if (!result.Succeeded)
             {
                 ModelState.AddModelError("", "Cannot add user existing roles");
+                ViewBag.StatusMessage = "Error: Cannot add user existing roles";
                 return View(model);
             }
 
-            return RedirectToAction("ManageUserRoles", new {id = id });
+            var StatusMessage = "User role successfully updated.";
+            return RedirectToAction("ManageUserRoles", new { id = id , StatusMessage = StatusMessage });
         }
     }
 }

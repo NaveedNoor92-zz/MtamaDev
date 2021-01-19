@@ -8,7 +8,11 @@ var markers_track = [];
 // called when page is loaded
 window.onload = function () {
     // arbitrary point
-    var myLatLng = new google.maps.LatLng(31.451881188002115, 74.30786712976669);
+    //var myLatLng = new google.maps.LatLng(31.451881188002115, 74.30786712976669);
+
+
+    var myLatLng = new google.maps.LatLng(-0.0236, 37.9062);
+    
     var centermarker, poly; 
 
     // options to init map with, again arbitrary
@@ -20,6 +24,8 @@ window.onload = function () {
 
     // get our map object
     map = new google.maps.Map(document.getElementById("mymaps"), myOptions);
+
+   
 
     // array to store markers that user has drawn
     var markers = [];
@@ -74,6 +80,9 @@ function resetFunc() {
     for (var i = 0; i < markers_track.length; i++) {
         markers_track[i].setMap(null);
     }
+    document.getElementById("profileViewModel_Field_Coords").value = "[]";
+    document.getElementById("profileViewModel_mapCoords").value = "[]";
+    document.getElementById("profileViewModel_Field_pin").value = "[]";
     //poly.setPath(null);
 }
 
@@ -104,6 +113,20 @@ function drawPoints(markers) {
     centermarker.setMap(map);
     centermarker.setVisible(true);
 
+
+    if (centermarker.getPosition().lat().toString() !== "0" && centermarker.getPosition().lng().toString() !== "-180") {
+        var coordString1 = "lat: "+ centermarker.getPosition().lat().toString() + ", " +
+            "lng: " + centermarker.getPosition().lng().toString();
+
+        document.getElementById("profileViewModel_Field_pin").value = coordString1;
+        var PanToPlot = new google.maps.LatLng(centermarker.getPosition().lat().toString(), centermarker.getPosition().lng().toString());
+        map.setZoom(15);
+        map.panTo(PanToPlot);
+    } 
+    else {
+        document.getElementById("profileViewModel_Field_pin").value = "[]";
+    }
+
     drawpointcalled = true;
     toCoordString(markers);
 }
@@ -117,8 +140,8 @@ function toCoordString(markersArray) {
     }
     coordString += "]";
 
-    document.getElementById("mapCoord").value = coordString;
-    console.log("This ran");
+    document.getElementById("profileViewModel_mapCoords").value = coordString;
+    document.getElementById("profileViewModel_Field_Coords").value = coordString;
     coordString = "";
 }
 

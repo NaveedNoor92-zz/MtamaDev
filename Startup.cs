@@ -32,7 +32,7 @@ namespace Mtama
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             // Add EF services to the services container.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -112,7 +112,7 @@ namespace Mtama
             });
 
             //   Add Roles and Admin Account
-           // CreateAdminRole(serviceProvider).Wait();
+            //CreateAdminRole(serviceProvider).Wait();
         }
 
         private async Task CreateAdminRole(IServiceProvider serviceProvider)

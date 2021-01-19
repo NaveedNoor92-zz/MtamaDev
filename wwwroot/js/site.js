@@ -33,7 +33,6 @@ function onlyNumber(evt) {
 
 function w3_open() {
     document.getElementById("main").style.marginLeft = "20%";
-    document.getElementById("mySidebar").style.width = "20%";
     document.getElementById("mySidebar").style.display = "block";
     document.getElementById("openNav").style.display = 'none';
     document.getElementById("closeNav").style.display = 'block';
@@ -123,7 +122,8 @@ function showSpinnerViewTransaction() {
 
 function exitSpinnerViewTransaction() {
     $("#bodyIdViewTransaction").addClass("enablebutton");
-    spinner.stop();
+    $("#bodyIdAttachment").addClass("enablebutton");
+//    spinner.stop();
 }
 
 

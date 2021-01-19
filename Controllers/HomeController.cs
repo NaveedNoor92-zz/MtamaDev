@@ -17,6 +17,7 @@ using System.IO;
 using X.PagedList;
 using Microsoft.AspNetCore.Http;
 using Mtama.Managers;
+using Mtama.VM;
 
 namespace Mtama.Controllers
 {
@@ -55,12 +56,17 @@ namespace Mtama.Controllers
         }
 
         // GET: PaymentsViewModels
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            ViewBag.UserRole = roles[0];
             return View();
+
+            
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Super Admin , Admin")]
         [HttpGet]
         public IActionResult MakePayments(string returnUrl = null)
         {
@@ -71,7 +77,7 @@ namespace Mtama.Controllers
             return View(pm);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Super Admin , Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MakePayments(PaymentModel model, string returnUrl = null)
@@ -80,6 +86,7 @@ namespace Mtama.Controllers
             {
                 ViewData["ReturnUrl"] = returnUrl;
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
                 model = PaymentManager.MakePayments(_context, model, userId);
                 
                 ViewData["ShowVerify"] = true;
@@ -96,108 +103,111 @@ namespace Mtama.Controllers
 
 
 
+        public async Task<IActionResult> MakePaymentFromAdmin(string PaymentId, string ReceiverId)
+        {
+            try
+            {
+                var model = new PaymentModel();
+                //var user = await _userManager.FindByIdAsync(ReceiverId);
+                //var modeldata = _context.Payments.Where(p => p.Id == Convert.ToInt64(PaymentId)).Include(p => p.Sender).Include(p => p.Receiver).FirstOrDefault();
+
+                //var receiver = _context.Users.Where(u => u.WalletAddress == user.WalletAddress).SingleOrDefault();
+
+                //var model = new PaymentModel();
+
+                //var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                var getPaymentData = await PaymentManager.MakePaymentFromAdmin(_context, PaymentId);
+
+                model.ReceiverId = getPaymentData.ReceiverId;
+                model.ReceiverWallet = getPaymentData.ReceiverWallet;
+                model.ReceiverName = getPaymentData.ReceiverName;
+                model.SenderIdNew = getPaymentData.SenderIdNew;
+                model.TimeStamp = DateTime.UtcNow;
+                model.TxStatus = Common.TxStatusPending;
+                model.TxGuid = Guid.NewGuid().ToString();
+
+                return View(model);
+
+
+
+                //return RedirectToAction("ViewTransaction", new { id = PaymentId});
+                //return View();
+            }
+            catch (Exception ex)
+            {
+                ViewData["Error"] = "There was an error in saving your transaction. " + ex.Message;
+                return RedirectToAction("ViewNotifications");
+            }
+
+        }
+
+
+
 
         [HttpGet]
-        public IActionResult ViewTransaction(int id)
+        public async Task<IActionResult> ViewTransaction(int id)
         {
-            ViewData["ShowVerify"] = false;
-            ViewData["Id"] = id;
-            ViewData["Sender"] = false;
-            ViewData["Receiver"] = false;
-            ViewData["bloburi"] = ConfigurationManager.GetAppSetting("BlobUri");
-            ViewData["sas"] = ConfigurationManager.GetAppSetting("SAS");
-            ViewData["container"] = ConfigurationManager.GetAppSetting("Container");
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var payment = _context.Payments.Where(p => p.Id == id).Include(p => p.Sender).Include(p => p.Receiver).FirstOrDefault();
-            if (payment == null) throw new Exception("Payment not found");
-            if (payment.SenderIdNew == userId)
+            if (User.IsInRole("Admin") || (User.IsInRole("Super Admin")))
             {
-                ViewData["Sender"] = true;
-            }
-            if (payment.ReceiverId == userId)
-            {
-                ViewData["Receiver"] = true;
-            }
-            if (payment.ReceiverId == userId || payment.SenderIdNew == userId)
-            {
-                if (payment.SenderIdNew == userId && payment.TxStatus == Common.TxStatusPending)
-                {
-                    ViewData["ShowVerify"] = true;
-                }
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var payment = PaymentManager.ViewTransaction(_context, id, userId);
+                var sender =  await _userManager.FindByIdAsync(payment.paymentModel.SenderIdNew);
+                payment.paymentModel.Sender = sender;
+                return View(payment);
+
             }
             else
             {
-                if (!User.IsInRole("Admin"))
-                    throw new Exception("You are not authorized to view this payment");
+                //throw new Exception("You are not authorized to view this payment");
+
+                return RedirectToAction("AccessDenied", "Account");
             }
-            return View(payment);
+
+
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ViewTransaction(PaymentModel model, string returnUrl = null)
+        public async Task<IActionResult> ViewTransaction(PaymentModelVM model, string returnUrl = null)
         {
-            var modeldata = _context.Payments.Where(p => p.Id == model.Id).Include(p => p.Sender).Include(p => p.Receiver).FirstOrDefault();
-
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            if (modeldata.ReceiverId == userId)
+            try
             {
-                //  var payment = _context.Payments.Where(p => p.ReceiverId == userId).FirstOrDefault();
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var returnmodel = PaymentManager.ViewTransaction(_context, model, userId);
 
-                if (model.ReceiverAttachment != modeldata.ReceiverAttachment)
-                {
-                    modeldata.ReceiverAttachment = model.ReceiverAttachment;
-                }
-                if (model.ReceiverComment != modeldata.ReceiverComment)
-                {
-                    modeldata.ReceiverComment = model.ReceiverComment;
-                }
+                //if (!User.IsInRole("Admin")) { 
+                //    throw new Exception("Only Transaction Initiator can verify transaction");
+                //}
 
-                _context.Payments.Update(modeldata);
-                _context.SaveChanges();
-
+                ViewData["ShowVerify"] = false;
+                return RedirectToAction("ViewTransaction", new { id = returnmodel.paymentModel.Id });
             }
-
-            if (modeldata.SenderIdNew == userId)
+            catch (Exception ex)
             {
-                // var payment = _context.Payments.Where(p => p.SenderId == userId).FirstOrDefault();
-
-                if (model.SenderAttachment != modeldata.SenderAttachment)
-                {
-                    modeldata.SenderAttachment = model.SenderAttachment;
-                }
-                if (model.SenderComment != modeldata.SenderComment)
-                {
-                    modeldata.SenderComment = model.SenderComment;
-                }
-
-                if (model.TxStatus == Common.TxStatusVerified)
-                {
-                    modeldata.TxStatus = Common.TxStatusVerified;
-                }
-                _context.Payments.Update(modeldata);
-                _context.SaveChanges();
+                ViewData["Error"] = "There was an error in Viewing transaction. " + ex.Message;
+                return RedirectToAction("ViewTransaction", new { id = model.Id });
             }
-
-            //if (!User.IsInRole("Admin")) { 
-            //    throw new Exception("Only Transaction Initiator can verify transaction");
-            //}
-
-            ViewData["ShowVerify"] = false;
-            return RedirectToAction("ViewTransaction", new { id = model.Id });
         }
+
+
+
 
         [Authorize(Roles = "Aggregator, Admin, supplier, Super Admin, Farmer")]
         [HttpGet]
         public async Task<IActionResult> ViewPayments(string searchString, string sortOrder, string currentFilter, int? page)
         {
-            ViewData["Title"] = "View Payments";
+            return View(await GetPayments());
+        }
 
-            var payments = await GetPayments();
-            return View(payments);
+        [Authorize(Roles = "Aggregator, Super Admin")]
+        [HttpGet]
+        public async Task<IActionResult> ViewPaymentsLinkedFarmers()
+        {
+            return View(await GetPaymentsLinkedFarmers());
         }
 
 
@@ -220,16 +230,73 @@ namespace Mtama.Controllers
 
         private async Task<List<PaymentModel>> GetPayments()
         {
-            if (User.IsInRole("Admin"))
+            if (User.IsInRole("Admin") || (User.IsInRole("Super Admin")))
             {
-                return await _context.Payments.Include(p => p.Sender).Include(p => p.Receiver).ToListAsync();
+                var payment = await PaymentManager.GetPayments(_context);
+                foreach (var item in payment)
+                {
+                    var sender = await _userManager.FindByIdAsync(item.SenderIdNew);
+                    item.Sender = sender;
+                }
+
+                return payment;
+
             }
             else
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                return await _context.Payments.Where(p => p.SenderIdNew == userId || p.ReceiverId == userId).Include(p => p.Sender).Include(p => p.Receiver).ToListAsync();
+
+                var payment = await PaymentManager.GetPayments(_context, userId);
+                foreach (var item in payment)
+                {
+                    var sender = await _userManager.FindByIdAsync(item.SenderIdNew);
+                    item.Sender = sender;
+                }
+
+                return payment;
             }
         }
+
+
+        private async Task<List<PaymentModel>> GetPaymentsLinkedFarmers()
+        {
+            try
+            {
+                var payment = new List<PaymentModel>();
+                if (User.IsInRole("Aggregator"))
+                {
+                    var aggregator = await _userManager.GetUserAsync(User);
+                    var data = _context.AggregatorAssociations.Where(u => u.AggregatorId == aggregator.Id).ToList();
+
+                    foreach (var item1 in data)
+                    {
+                        var temp = await PaymentManager.GetPayments(_context, Convert.ToString(item1.FarmerId));
+                        foreach (var item in temp)
+                        {
+                            var sender = await _userManager.FindByIdAsync(item.SenderIdNew);
+                            item.Sender = sender;
+                            payment.Add(item);
+                        }
+                    }
+                    return payment;
+                }
+                else
+                {
+                    return payment;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return new List<PaymentModel>();
+
+            }
+        }
+
+
+
+
 
         [Authorize]
         [HttpGet]
@@ -250,72 +317,68 @@ namespace Mtama.Controllers
 
 
         [Authorize(Roles = "Super Admin,Aggregator")]
-        public async Task<IActionResult> ViewFarmers()
+        public async Task<IActionResult> ViewFarmers(string StatusMessage = "")
         {
-            var temp = await _context.Users.ToListAsync();
-
             var aggregator = await _userManager.GetUserAsync(User);
             ViewBag.AggId = aggregator.Id;
-
-            var data = _context.AggregatorAssociations.Where(u => u.AggregatorId == aggregator.Id).ToList();
-
-            foreach (var item in temp)
+            if (StatusMessage != "")
             {
-                //user = await _userManager.GetUserAsync(User);
-                var roles = await _userManager.GetRolesAsync(item);
-                item.UserRole = roles[0];
-                foreach (var item1 in data)
-                {
-                    if (item1.FarmerId == item.Id)
-                    {
-                        item.AggregatorLinked = true;
-                    }
-                }
-
+                ViewBag.StatusMessage = StatusMessage;
             }
-        
-          
-
-            return View(temp);
+            return View(await PaymentManager.ViewFarmers(_context, _userManager, aggregator.Id));
         }
 
 
         [HttpPost]
         public async Task<IActionResult> LinkAggregatorToFarmer(string UserId, string AggId, string link)
         {
-            if (link == "Link")
-            {
-                var data = new AggregatorAssociationModel
-                {
-                    AggregatorId = AggId,
-                    FarmerId = UserId
-                };
 
-                _context.Add(data);
-                _context.SaveChanges();
+            await PaymentManager.LinkAggregatorToFarmer(_context, UserId, AggId, link);
+            if (link == "Unlink")
+            {
+                ViewBag.statusMessage = "Successfully unlinked.";
             }
             else
             {
-                var data = _context.AggregatorAssociations.Where(u => u.AggregatorId == AggId).ToList();
-                if (data != null)
-                {
-
-                    foreach (var item in data)
-                    {
-                        if (item.FarmerId == UserId)
-                        {
-                            item.FarmerId = "";
-                            item.AggregatorId = "";
-                        }
-                    }
-
-                    await _context.SaveChangesAsync();
-                    
-
-                }
+                ViewBag.statusMessage = "Successfully linked.";
             }
 
             return Json(link);
+
+
+            //var markers = _context.Markers.Where(u => u.UserId == user.Id).SingleOrDefault();
+            //if (markers != null)
+            //{
+            //    markers.LatLng = model.mapCoords;
+            //    await _context.SaveChangesAsync();
+            //}
+            //var result = _context.AggregatorAssociations.Add(data);
+
+        }
+
+        [Authorize(Roles = "Super Admin,Aggregator")]
+        public async Task<List<ApplicationUser>> ShowAggregatorsFarmers()
+        {
+            try
+            {
+                var users = new List<ApplicationUser>();
+
+                var aggregator = await _userManager.GetUserAsync(User);
+                var data = _context.AggregatorAssociations.Where(u => u.AggregatorId == aggregator.Id).ToList();
+
+                foreach (var item in data)
+                {
+                    var user = await _userManager.FindByIdAsync(item.FarmerId);
+                    users.Add(user);
+                }
+
+                return users;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
 
 
             //var markers = _context.Markers.Where(u => u.UserId == user.Id).SingleOrDefault();
@@ -334,7 +397,7 @@ namespace Mtama.Controllers
         public IActionResult InitatePayment(string UserId)
         {
             ViewBag.UserId = UserId;
-            ViewBag.sasToken = ConfigurationManager.GetAppSetting("SAS");
+            ViewBag.sasToken = ConfigurationManager.GetAppSetting("SAS");   
             return View();
         }
 
@@ -344,31 +407,10 @@ namespace Mtama.Controllers
             
             try
             {
-            
-
+                var SenderId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var user = await _userManager.FindByIdAsync(UserId);
-
-                var pm = new PaymentModel();
-
-
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var guid = Guid.NewGuid().ToString();
-
-                pm.SenderIdNew = UserId;
-                pm.TxGuid = guid;
-                pm.ReceiverId = user.Id;
-                pm.ReceiverName = user.FirstName +" "+ user.LastName;
-                pm.ReceiverWallet = user.WalletAddress;
-                pm.TimeStamp = DateTime.UtcNow;
-                pm.TxStatus = Common.TxStatusDraft;
-                pm.AggregatorAttachment = FileOrg;
-                pm.AggregatorComment = Comments;
-                pm.FileName = FileName;
-
-               
-
-                _context.Payments.Add(pm);
-                 _context.SaveChanges();
+          
+                await PaymentManager.InitatePayments(_context, user, UserId, SenderId, FileOrg, FileName, Comments);
 
 
                 //pm = _context.Payments.Where(p => p.TxGuid == pm.TxGuid).FirstOrDefault();
@@ -381,9 +423,8 @@ namespace Mtama.Controllers
 
                 //return RedirectToAction("ViewTransaction", new { id = model1.Id });
 
-
-
-                return RedirectToAction("ViewFarmers");
+                ViewData["success"] = "Payment Initiated Successfully!";
+                return RedirectToAction("ViewFarmers", new { StatusMessage = "Payment Initiated Successfully!" });
 
 
 
@@ -415,7 +456,15 @@ namespace Mtama.Controllers
         [Authorize(Roles = "Super Admin,Admin")]
         public async Task<IActionResult> ViewNotifications()
         {
-            var temp = await _context.Payments.ToListAsync();
+            try
+            {
+                return View(await PaymentManager.ViewNotifications(_context));
+            }
+            catch (Exception ex)
+            {
+                ViewData["Error"] = "There was an error while fetching your notifications. " + ex.Message;
+                return RedirectToAction("Index");
+            }
             //foreach (var item in temp)
             //{
             //    //user = await _userManager.GetUserAsync(User);
@@ -423,41 +472,7 @@ namespace Mtama.Controllers
             //    item.UserRole = roles[0];
 
             //}
-            return View(temp);
-        }
-
-
-
-        public async Task<IActionResult> MakePaymentFromAdmin(string PaymentId, string ReceiverId)
-        {
-            try
-            {
-                //var model = new PaymentModel();
-                //var user = await _userManager.FindByIdAsync(ReceiverId);
-                //var modeldata = _context.Payments.Where(p => p.Id == Convert.ToInt64(PaymentId)).Include(p => p.Sender).Include(p => p.Receiver).FirstOrDefault();
-
-                //var receiver = _context.Users.Where(u => u.WalletAddress == user.WalletAddress).SingleOrDefault();
-
-                //var model = new PaymentModel();
-                var data = _context.Payments.Where(u => u.Id == Convert.ToInt32(PaymentId)).FirstOrDefault();
-
-                //var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                
-
-
-                return View(data);
-
-
-
-                //return RedirectToAction("ViewTransaction", new { id = PaymentId});
-                //return View();
-            }
-            catch (Exception ex)
-            {
-                ViewData["Error"] = "There was an error in saving your transaction. " + ex.Message;
-                return View();
-            }
-
+     
         }
 
 

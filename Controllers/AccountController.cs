@@ -47,10 +47,23 @@ namespace Mtama.Controllers
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            var user = _signInManager.IsSignedIn(User);
+            //var user1 = _userManager.GetUserId(User);
+            //var user2 = _userManager.GetUserName(User);
+            //var user3 = await _userManager.GetUserAsync(User);
+            //var user4 = HttpContext.User.Identity.Name;
+            //var user5 = await _userManager.GetUserAsync(HttpContext.User);
+            
+            if (user == false)
+            {
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+                ViewData["ReturnUrl"] = returnUrl;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
@@ -212,8 +225,14 @@ namespace Mtama.Controllers
             return View();
         }
 
+
+
+
+        #region ToBeDeleted
+
+
         [HttpGet]
-        [Authorize(Roles = "Aggregator, Super Admin")]
+        [Authorize(Roles = "Super Admin")]
         public IActionResult RegisterFarmer(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -283,11 +302,11 @@ namespace Mtama.Controllers
         }
 
 
- 
+        #endregion
 
 
         [HttpGet]
-        [Authorize(Roles = "Super Admin,Admin,Aggregator")]
+        [Authorize(Roles = "Super Admin,Admin")]
         public IActionResult RegisterUser(string User,string AddedByAgg,string error = null, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -318,7 +337,7 @@ namespace Mtama.Controllers
                         Gender = model.Gender,
                         Farmer_Id_Form_No = model.Farmer_Id_Form_No,
                         DisabilityType = model.DisabilityType,
-
+                        
                         supplier_Company = model.supplier_Company,
                         Aggregator_Company = model.Aggregator_Company,
                         AggregatorID = model.AggregatorID,
@@ -335,11 +354,11 @@ namespace Mtama.Controllers
                     {
                         user.Gender = "Male";
                     }
-                    if (AddedByAgg == "AddedByAgg")
-                    {
-                        var tempuser = await _userManager.GetUserAsync(User);
-                        //user.AggregatorID = tempuser.Id;
-                    }
+                    //if (AddedByAgg == "AddedByAgg")
+                    //{
+                    //    var tempuser = await _userManager.GetUserAsync(User);
+                    //    //user.AggregatorID = tempuser.Id;
+                    //}
 
 
                     var result = await _userManager.CreateAsync(user, model.Password);
@@ -357,15 +376,17 @@ namespace Mtama.Controllers
                         //await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
                         //await _signInManager.SignInAsync(user, isPersistent: false);
-                        _logger.LogInformation("User created a new account with password.");
+                        //_logger.LogInformation("User created a new account with password.");
                         //                    return RedirectToLocal(returnUrl);
                         //return RedirectToAction("Index", "Home", new { area = "" });  
-                        return RedirectToAction("ViewUsers", "User");
+                     
+                        var UserStatus  = "User " + model.FirstName + " " + model.LastName + " with Role "+ model.Role + " is added successfully.";
+                        return RedirectToAction("ViewUsers", "User", new { UserStatus = UserStatus });
 
                     }
                     //AddErrors(result);
                     //  ViewData["Error"] = result.Errors.FirstOrDefault().Description;
-                    var error = ViewData["Error"] = " The Phonenumber you entered is already taken. Please enter a different one.";
+                    var error = ViewData["Error"] = " The Phone Number you entered is already taken. Please enter a different one.";
                     //return View(model);
 
                     //return RedirectToAction("ViewUsers", "User");
@@ -373,15 +394,16 @@ namespace Mtama.Controllers
                 }
                 // If we got this far, something failed, redisplay form
                 //                return View(model);
-                return RedirectToAction("ViewUsers", "User");
+                var error1 = ViewData["Error"] = " Something went wrong. Please reload the page and try again.";
+                return RedirectToAction("ViewUsers", "User", new { UserStatus = error1 });
                 //   // return RedirectToAction("HOmeIndex");
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                var error = ViewData["Error"] = ex.Message;
                 //return View(model);
                 //return RedirectToAction("ViewUsers", "User");
-                return RedirectToAction("RegisterUser", new { User = model.Role, ex.Message });
+                return RedirectToAction("RegisterUser", new { User = model.Role, error });
             }
         }
 
