@@ -24,9 +24,11 @@ App = {
         if (window.ethereum) {
             App.web3Provider = new Web3(window.ethereum);
             window.ethereum.enable();
-            App.initAccount();
+   
 
             App.web3 = new Web3(App.web3Provider);
+
+            App.initAccount();
             return true;
 
         }
@@ -35,7 +37,21 @@ App = {
 
     initAccount: function () {
         //init Account details    
-        web3.eth.getAccounts(function (error, accounts) {
+
+
+        //App.web3Provider.eth.getAccounts((err, res) => {
+        //    console.log(res[0]);
+        //    console.log("web3Provider");
+        //});
+
+        
+
+        //App.web3.eth.getAccounts((err, res) => {
+        //    console.log(res[0]);
+        //    console.log("Web3");
+        //});
+
+        App.web3.eth.getAccounts(function (error, accounts) {
             if (error) {
                 console.log(error);
                 alert("Error in getting account details.");
@@ -123,6 +139,7 @@ App = {
 
         var blobUri = "https://mtamadev.blob.core.windows.net/";
         //var sas = "?sv=2019-12-12&ss=bfqt&srt=co&sp=rwlacupx&se=2021-07-28T20:13:11Z&st=2020-07-28T12:13:11Z&spr=https&sig=pncBkCZpWBTilzNPYdLKEhZAtkjhGKY3YZBysdZOD1U%3D";
+        var sas = "?sv=2019-12-12&ss=bfqt&srt=sco&sp=rwdlacupx&se=2025-11-30T17:00:19Z&st=2020-11-30T09:00:19Z&spr=https,http&sig=qFeQpXcH9%2BDh7%2FcpDKeUfQqa4H7PsLgVwb5ncB0l9fI%3D";
         var container = "payments";
 
         var transactionId = document.getElementById('inputId').value;

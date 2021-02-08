@@ -690,13 +690,14 @@
         //};
 
         map.panTo(myLatLng);
-        map.setZoom(15);
+        map.setZoom(20);
 
         var marker = new google.maps.Marker();
         var markers = [];
         marker.setPosition(myLatLng);
         marker.setMap(map);
         marker.setVisible(true);
+        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
 
         // push it to the markers array
         markers.push(marker);

@@ -42,24 +42,24 @@
 
                 @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Admin")))
                 {
-                    <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="MakePayments" title="Make Transactions">Authorise Payments</a>
+                    @*<a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="MakePayments" title="Authorise Transactions">Authorise Payments</a>*@
                 }
                 <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="ViewPayments" title="View Payments">View Payments</a>
-                <a asp-area="" class="w3-bar-item " asp-controller="Manage" style="color:white" asp-action="Profile" title="Profile">View Account</a>
+                <a asp-area="" class="w3-bar-item " asp-controller="Manage" style="color:white" asp-action="Profile" title="View Account">View Account</a>
 
                 @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Aggregator")))
                 {
-                    <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="ViewFarmers" title="ViewFarmers">View Farmers</a>
+                    <a asp-area="" class="w3-bar-item " asp-controller="Home" style="color:white" asp-action="ViewFarmers" title="View Farmers">View Farmers</a>
                 }
 
                 @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
                 {
-                    <a asp-area="" class="w3-bar-item " asp-controller="User" style="color:white" asp-action="ViewUsers" title="ViewUsers">Manage Users</a>
+                    <a asp-area="" class="w3-bar-item " asp-controller="User" style="color:white" asp-action="ViewUsers" title="Manage Users">Manage Users</a>
                 }
 
                 @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Admin")))
                 {
-                    <a asp-area="" class="w3-bar-item " asp-controller="User" style="color:white" asp-action="ViewUsers" title="ViewUsers">View Users</a>
+                    <a asp-area="" class="w3-bar-item " asp-controller="User" style="color:white" asp-action="ViewUsers" title="View Users">View Users</a>
                 }
 
                 @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))

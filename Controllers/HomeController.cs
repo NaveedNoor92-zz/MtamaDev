@@ -150,21 +150,21 @@ namespace Mtama.Controllers
         {
 
 
-            if (User.IsInRole("Admin") || (User.IsInRole("Super Admin")))
-            {
+            //if (User.IsInRole("Admin") || (User.IsInRole("Super Admin")))
+            //{
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var payment = PaymentManager.ViewTransaction(_context, id, userId);
                 var sender =  await _userManager.FindByIdAsync(payment.paymentModel.SenderIdNew);
                 payment.paymentModel.Sender = sender;
                 return View(payment);
 
-            }
-            else
-            {
-                //throw new Exception("You are not authorized to view this payment");
+            //}
+            //else
+            //{
+            //    //throw new Exception("You are not authorized to view this payment");
 
-                return RedirectToAction("AccessDenied", "Account");
-            }
+            //    return RedirectToAction("AccessDenied", "Account");
+            //}
 
 
 

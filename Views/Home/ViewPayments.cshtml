@@ -10,6 +10,10 @@
     ViewData["Title"] = "View Payments";
     var etherscanLink = ConfigurationManager.GetAppSetting("Etherscan");
 }
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 @*<link href="~/css/bootstrap4.min.css" rel="stylesheet" />*@
 @*<link href="~/css/bootstrap4.1.3.css" rel="stylesheet" />*@
 @*<script src="https://code.jquery.com/jquery-3.3.1.js"></script>*@
@@ -30,7 +34,10 @@
 <br />
 
 <div class="w3-container">
-
+    @*@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+    {
+        <p>this is working</p>
+    }*@
 
     <table id="example" class="table table-striped table-bordered" style="width:100%">
         <thead>
@@ -68,6 +75,7 @@
                 {
                     <tr>
                         <td>
+
                             <a href="/Home/ViewTransaction?Id=@Html.DisplayFor(modelItem => item.Id)">@Html.DisplayFor(modelItem => item.Id)</a>
                         </td>
                         <td>

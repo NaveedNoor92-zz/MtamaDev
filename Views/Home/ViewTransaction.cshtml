@@ -69,7 +69,7 @@
                     <label asp-for="paymentModel.SenderAttachment"></label>
                     @if (Model.paymentModel.SenderAttachment != null)
                     {
-                        <a class="pull-right btn-link glyphicon glyphicon-paperclip" href="@Model.paymentModel.SenderAttachment"></a>
+                        <a target="_blank" class="pull-right btn-link glyphicon glyphicon-paperclip" href="@Model.paymentModel.SenderAttachment"></a>
                     }
                     <input asp-for="paymentModel.SenderAttachment" id="senderattachment" hidden type="text" class="" /><br />
                     <input id="senderattachment1" type="file" onchange="ReceiverFileSelected('senderattachment1','senderattachmentbtn')" class="" /><br />
@@ -86,7 +86,7 @@
                     <label asp-for="paymentModel.ReceiverAttachment"></label>
                     @if (Model.paymentModel.ReceiverAttachment != null)
                     {
-                        <a class="pull-right btn-link glyphicon glyphicon-paperclip" href="@Model.paymentModel.ReceiverAttachment"></a>
+                        <a target="_blank" class="pull-right btn-link glyphicon glyphicon-paperclip" href="@Model.paymentModel.ReceiverAttachment"></a>
                     }
                     <input asp-for="paymentModel.ReceiverAttachment" id="receiverattachment" hidden type="text" class="" /><br />
                     <input id="receiverattachment1" rows="6" onchange="ReceiverFileSelected('receiverattachment1','receiverattachmentbtn','btnSubmit')" cols="75" type="file" class="" /><br />

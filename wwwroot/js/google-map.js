@@ -17,7 +17,7 @@ window.onload = function () {
 
     // options to init map with, again arbitrary
     var myOptions = {
-        zoom: 10,
+        zoom: 15,
         center: myLatLng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
@@ -120,7 +120,7 @@ function drawPoints(markers) {
 
         document.getElementById("profileViewModel_Field_pin").value = coordString1;
         var PanToPlot = new google.maps.LatLng(centermarker.getPosition().lat().toString(), centermarker.getPosition().lng().toString());
-        map.setZoom(15);
+        map.setZoom(20);
         map.panTo(PanToPlot);
     } 
     else {
